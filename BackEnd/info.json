@@ -3,7 +3,7 @@
         "name": "Geneviève DuPont",
         "user-id": "gen-dup",
         "age": 25,
-        "description": "Teaches French......",
+        "description": "Experienced French tutor offering personalized lessons for beginners to advanced learners. Specializes in conversational skills and exam preparation.",
         "categories": ["French", "Tutor"],
         "image": "genevieve.jpg"
     },
@@ -109,7 +109,7 @@
     {
         "name": "Mia Walker",
         "user-id": "mia-wal",
-        "age": 28,
+        "age": 30,
         "description": "Hiking guide specializing in trail navigation, safety, and outdoor skills for all experience levels.",
         "categories": ["Outdoors", "Hiking", "Guide"],
         "image": "mia.jpg"
