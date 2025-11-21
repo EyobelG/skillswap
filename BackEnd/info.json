@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Geneviève DuPont",
+        "user-id": "gen-dup",
+        "age": 25,
+        "description": "Teaches French......",
+        "categories": ["French", "Tutor"]
+    },
+
+     {
+        "name": "",
+        "user-id": "",
+        "age": 31,
+        "description": "Add bio here",
+        "categories": [""]
+    }
+]
