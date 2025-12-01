@@ -4,7 +4,7 @@
     </head>
 <body>
 <?php
-// 1. Connect to MySQL
+// connect to mysql
 $servername = "localhost";
 $username = "utnq9qzvkroxc";       
 $password = "cs20finalproj";          
@@ -12,22 +12,22 @@ $dbname = "dbfxsgcb4otskb";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Check connection
+// check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// 2. Query the Members table
+// query the Members table
 $sql = "SELECT * FROM Members";
 $result = $conn->query($sql);
 
-// 3. Store results
+// store results
 $members = [];
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
 
-        // Convert JSON-looking strings back to arrays
+        // convert JSON back to arrays (mysql can't store arrays, JSON is a workaround)
         $row["categories"]   = json_decode($row["categories"], true);
         $row["wantsToLearn"] = json_decode($row["wantsToLearn"], true);
 
@@ -35,7 +35,7 @@ if ($result->num_rows > 0) {
     }
 }
 
-// 4. Output as JSON (for frontend fetch)
+// output as JSON (for frontend fetch)
 header("Content-Type: application/json");
 echo json_encode($members);
 
