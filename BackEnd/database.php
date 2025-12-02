@@ -1,33 +1,28 @@
-<html>
-    <head>
-        <title>Fetch Members Data</title>
-    </head>
-<body>
 <?php
-// connect to mysql
+// 1. Connect to MySQL
 $servername = "localhost";
-$username = "utnq9qzvkroxc";       
-$password = "cs20finalproj";          
-$dbname = "dbfxsgcb4otskb";  
+$username = "utnq9qzvkroxc";       // your XAMPP / MAMP username
+$password = "cs20finalproj";           // your DB password
+$dbname = "dbfxsgcb4otskb";  // your database name
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// check connection
+// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// query the Members table
+// 2. Query the Members table
 $sql = "SELECT * FROM Members";
 $result = $conn->query($sql);
 
-// store results
+// 3. Store results
 $members = [];
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
 
-        // convert JSON back to arrays (mysql can't store arrays, JSON is a workaround)
+        // Convert JSON-looking strings back to arrays
         $row["categories"]   = json_decode($row["categories"], true);
         $row["wantsToLearn"] = json_decode($row["wantsToLearn"], true);
 
@@ -35,12 +30,9 @@ if ($result->num_rows > 0) {
     }
 }
 
-// output as JSON (for frontend fetch)
+// 4. Output as JSON (for frontend fetch)
 header("Content-Type: application/json");
 echo json_encode($members);
 
 $conn->close();
 ?>
-</body>
-
-</html>
