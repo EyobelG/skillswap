@@ -55,3 +55,22 @@ body {
     text-decoration: underline;
   }
 /* FOOTER STYLES (from midterm website) */
+
+/* MEMBERS STYLES */
+#members-container {
+    width: 80%;
+    margin: 40px auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.member-card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 250px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+/* MEMBERS STYLES */

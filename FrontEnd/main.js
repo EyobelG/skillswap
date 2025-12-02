@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 card.innerHTML = `
                     <h2>${member.name}</h2>
                     <p><strong>Description:</strong> ${member.description}</p>
-                    <p><strong>Categories:</strong> ${member.categories.join(", ")}</p>
+                    <p><strong>Willing to Teach:</strong> ${member.categories.join(", ")}</p>
                     <p><strong>Wants to Learn:</strong> ${member.wantsToLearn.join(", ")}</p>
                 `;
 
