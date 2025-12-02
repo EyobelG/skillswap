@@ -1,0 +1,57 @@
+/* WHOLE BODY STYLES */
+body {
+    margin: 0;
+    background-color: #e0bbff;
+    padding-top: 50px;
+    cursor: pointer;
+}
+/* WHOLE BODY STYLES */
+
+/* FOOTER STYLES (from midterm website) */
+#footer-container {
+    margin-top: auto !important;
+    position: relative !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    text-align: center !important;
+    z-index: 1000 !important;
+    width: 100% !important;
+    background-color: #552583;
+    height: 100px;
+  }
+
+  .site-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #552583;
+    color: #fdb927;
+    border-top: 3px solid #552583;
+    width: 100%;
+    padding: 20px 0;
+    box-sizing: border-box;
+    text-align: center;
+    font-family: "Times New Roman", Times, serif;
+    position: relative;
+    bottom: 0;
+  }
+  
+  .site-footer p {
+    margin: 0 0 10px 0;
+    font-size: 0.9rem;
+    padding: 0 5px;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+  
+  .site-footer a {
+    color: #fdb927;
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 0 5px;
+  }
+  
+  .site-footer a:hover {
+    text-decoration: underline;
+  }
+/* FOOTER STYLES (from midterm website) */
