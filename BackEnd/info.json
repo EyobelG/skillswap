@@ -2,10 +2,10 @@
     {
         "name": "Geneviève DuPont",
         "user-id": "gen-dup",
-        "age": 25,
+        "age": 38,
         "description": "Experienced French tutor offering personalized lessons for beginners to advanced learners. Specializes in conversational skills and exam preparation.",
         "categories": ["French", "Tutor"],
-        "image": "genevieve.jpg"
+        "image": "images/genevieve.jpg"
     },
 
     {
@@ -14,7 +14,7 @@
         "age": 29,
         "description": "Guitar teacher focusing on acoustic technique, chords, and beginner music theory. Lessons tailored to adults and teens.",
         "categories": ["Music", "Guitar", "Tutor"],
-        "image": "miguel.jpg"
+        "image": "images/miguel.jpg"
     },
     
     {
