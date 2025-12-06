@@ -2,21 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <link rel="stylesheet" href="style.css" />
     <script src="main.js" defer></script>
-    <title>Sign Up</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+    <title>Sign In</title>
     <style>
         :root {
             --bg: #f4f7fb;
             --lightgray: #e6e9ef;
             --card: #ffffff;
-            --accent: #2563eb;
+            --accent: #7c3aed;
             --muted: #6b7280;
             --lakers-purple: #552583;
-            --lakers-purple-light: #7c3aed;
             --lakers-gold: #fdb927;
             --gold: #fdb927;
+        }
+
+        body {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin: 0;
+            font-family: Helvetica, Arial, sans-serif;
+            background: linear-gradient(180deg,var(--bg),#fff);
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        main {
+            width: 100%;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            padding-top: 90px; /* Add space for fixed navbar */
+            padding-bottom: 0;
+            overflow-x: hidden;
         }
 
         * {
@@ -25,37 +52,14 @@
             box-sizing: border-box;
         }
 
-        html, body {
-            height: 100%;
-        }
-
-        body {
-            font-family: Helvetica, Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            color: #111827;
-            background: var(--bg);
-            padding-top: 50px; /* Account for fixed navbar */
-        }
-
-        /* Main Content */
-        main {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem 1rem;
-        }
-
         .card {
+            max-height: 500px;
             background: var(--card);
             padding: 2rem;
             border-radius: 12px;
             box-shadow: 0 6px 24px rgba(16,24,40,0.08);
             width: 100%;
             max-width: 420px;
-            margin: 0 auto;
         }
 
         h1 {
@@ -80,6 +84,13 @@
             margin-bottom: 0.8rem;
             font-size: 0.95rem;
         }
+        
+        .error{
+            color: #b91c1c;
+            font-size: 0.9rem;
+            margin: 0 0 0.75rem;
+            display: none;
+        }
 
         input:focus {
             outline: none;
@@ -87,33 +98,26 @@
             box-shadow: 0 0 0 3px rgba(85, 37, 131, 0.1);
         }
 
-        .error {
-            color: #b91c1c;
-            font-size: 0.9rem;
-            margin: 0 0 0.75rem;
-            display: none;
-        }
-
-        button[type="submit"], .g-signin2 {
+        button[type="submit"], .abcRioButton {
             margin: 0;
             border: 0;
-            border-radius: 8px;
+            border-radius: 8px !important;
+            box-shadow: 2px 2px 3px var(--lightgray) !important;
             font-weight: 600;
             cursor: pointer;
-            width: 100%;
+            width: 100% !important;
             font-size: 1rem;
         }
 
         button[type="submit"] {
             padding: 0.7rem 0.9rem;
-            background: var(--lakers-purple);
+            background: var(--accent);
             margin-bottom: 10px;
             color: #fff;
-            transition: background-color 0.3s;
         }
 
-        button[type="submit"]:hover:not(:disabled) {
-            background: #6d28d9;
+        button:hover {
+            box-shadow: 2px 2px 3px var(--lightgray) !important;
         }
 
         .g-signin2 {
@@ -141,17 +145,20 @@
             }
         }
         
-
         button[type="submit"]:disabled {
             opacity: 0.6;
-            cursor: not-allowed;
+            cursor: default;
         }
 
-        .muted {
+        button[type="submit"]:hover:not(:disabled) {
+            background: #6d28d9;
+        }
+
+        .muted{
             color: var(--muted);
             font-size: 0.85rem;
             margin-top: 0.75rem;
-            text-align: center;
+            text-align:center;
         }
 
         .muted a {
@@ -162,12 +169,14 @@
         .muted a:hover {
             text-decoration: underline;
         }
+
     </style>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://accounts.google.com/gsi/client" async></script>
     <meta name="google-signin-client_id" content="1087286650770-ctjshnie3q7rqf6njhuusruqkuo4udpe.apps.googleusercontent.com">
 </head>
 <body>
-        <!-- Navbar -->
+    <!-- Navbar -->
     <nav class="topnav" id="myTopnav">
       <a href="index.html" class="logo">SkillSwap</a>
       <div class="nav-links">
@@ -175,125 +184,107 @@
         <a href="members.html">Members</a>
         <a href="contact.html">Contact Us</a>
         <a href="signup.html">Sign Up</a>
-        <a href="signin.html" class = "active">Sign In</a>
+        <a href="signin.html" class="active">Sign In</a>
       </div>
       <a class="icon" onclick="toggleMenu()">
         <i class="fa fa-bars"></i>
       </a>
     </nav>
-    <main class="card" aria-labelledby="signup-title">
-        <h1 id="signup-title">Sign In</h1>
+    
+    <div id="header-container"></div>
 
-        <form id="signup" action="#" method="post">
-            <label for="email">Email address</label>
-            <input id="email" name="email" type="email" autocomplete="email" required />
+    <main>
+        <div class="card" aria-labelledby="signin-title">
+            <h1 id="signin-title">Sign In</h1>
 
-            <label for="password">Password</label>
-            <input id="password" name="password" type="password" minlength="8" required
-                   autocomplete="new-password" />
+            <form id="signin" action="./signin.php" method="post">
+                <label for="email">Email address</label>
+                <input id="email" name="email" type="email" autocomplete="email" required autofocus />
 
-            <button id="submitBtn" type="submit" disabled>Sign in</button>
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" minlength="8" required
+                       autocomplete="current-password" />
+
+                <div id="error" class="error" role="alert" aria-live="assertive"></div>
+
+                <button id="submitBtn" type="submit" disabled>Sign in</button>
 
                 <div class="g-signin2" data-onsuccess="onSignIn"></div>
-
-
-            <div class="muted">Don't have an account? <a href="./signup.html" style="color:var(--accent);text-decoration:none">Sign up</a></div>
-        </form>
+                
+                <div class="muted">Don't have an account? <a href="./signup.html" style="color:var(--accent);text-decoration:none">Sign up</a></div>
+            </form>
+        </div>
     </main>
 
-    <!-- Footer -->
-    <div id="footer-container">
-        <footer class="site-footer">
-            <p>&copy; 2024 SkillSwap. All rights reserved.</p>
-            <p>
-                <a href="#">Privacy Policy</a> | 
-                <a href="#">Terms of Service</a> | 
-                <a href="contact.html">Contact Us</a>
-            </p>
-        </footer>
-    </div>
+    <div id="footer-container"></div>
 
     <script>
-        function toggleMenu() {
-            const navLinks = document.querySelector(".nav-links");
-            if (navLinks.style.display === "block") {
-                navLinks.style.display = "none";
-            } else {
-                navLinks.style.display = "block";
-            }
-        }
-
         window.onload = () => {
-            const form = document.getElementById("signup");
+            const form = document.getElementById("signin");
             const email = document.getElementById("email");
             const password = document.getElementById("password");
+            const error = document.getElementById("error");
             const submitBtn = document.getElementById("submitBtn");
 
+            form.reset();
             submitBtn.disabled = true;
 
-            function showError(message) {
+            function showError(message){
                 error.textContent = message;
                 error.style.display = message !== "" ? "block" : "none";
             }
 
-            form.addEventListener("change", function(e) {
-                if (email.value.length < 1) {
-                    e.preventDefault();
-                    submitBtn.disabled = true;
-                } else if (!email.validity.valid) {
+            let emailValid = false;
+            let passwordValid = false;
+
+            email.addEventListener("change", function(e) {
+                showError("");
+                if (!email.validity.valid) {
                     e.preventDefault();
                     showError("Enter a valid email address.");
-                    email.focus();
-                    submitBtn.disabled = true;
-                } else if (password.value.length < 8) {
+                    emailValid = false;
+                } else {
+                    emailValid = true;
+                }
+            });
+            
+            password.addEventListener("change", function(e) {
+                showError("");
+                if (password.value.length < 8){
                     e.preventDefault();
                     showError('Password must be at least 8 characters.');
-                    submitBtn.disabled = true;
+                    passwordValid = false;
                 } else {
+                    passwordValid = true;
+                }
+            });
+
+            form.addEventListener("change", function(e) {
+                if (emailValid && passwordValid) {
                     submitBtn.disabled = false;
+                } else {
+                    submitBtn.disabled = true;
                 }
             });
 
             form.addEventListener("submit", function(e){
-                if (email.value.length < 1) {
-            form.addEventListener("submit", function(e) {
                 showError("");
 
-                if (fullName.value.length < 1) {
-                    e.preventDefault();
-                    fullName.focus();
-                    return;
-                } else if (password.value.length < 8){
-                } else if (!email.validity.valid) {
+                if (!email.validity.valid) {
                     e.preventDefault();
                     showError("Enter a valid email address.");
                     email.focus();
                     return;
-                } else if (password.value.length < 8) {
+                } else if (password.value.length < 8){
                     e.preventDefault();
+                    showError("Password must be at least 8 characters.");
                     password.focus();
                     return;
                 }
 
-
                 submitBtn.disabled = true;
-                submitBtn.textContent = "Logging in...";
-
-                // POST
-                // Simulate submission
-                e.preventDefault();
-                submitBtn.disabled = true;
-                submitBtn.textContent = "Creating…";
-
-                setTimeout(() => {
-                    showError('');
-                    alert("Account created (demo).");
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = "Create account";
-                    form.reset();
-                }, 900);
+                submitBtn.textContent = "Signing in…";
             });
-
         };
     </script>
 </body>
