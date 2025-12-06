@@ -49,3 +49,14 @@ function toggleMenu() {
     var nav = document.getElementById("myTopnav");
     nav.classList.toggle("responsive");
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const submitBtn = document.getElementById('submitBtn');
+
+    if (submitBtn) {
+        // 2. Add a click event listener
+        submitBtn.addEventListener('click', function(event) {
+            window.location.href = 'success.html';
+        });
+    }
+});
