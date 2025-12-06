@@ -44,3 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 //CODE TO LOAD MEMBERS FROM DATABASE
+//RESPONSIVE NAVBAR CODE
+function toggleMenu() {
+    var nav = document.getElementById("myTopnav");
+    nav.classList.toggle("responsive");
+}
