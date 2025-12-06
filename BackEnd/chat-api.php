@@ -88,7 +88,6 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, [
 $response = curl_exec($ch);
 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 $curlError = curl_error($ch);
-// FIX: Removed the '$' variable assignment before the function call
 curl_close($ch); 
 
 // Handle errors
@@ -112,7 +111,6 @@ $aiResponse = $data['candidates'][0]['content']['parts'][0]['text'] ?? null;
 
 if (empty($aiResponse)) {
     http_response_code(500);
-    // Check for "promptFeedback" which might explain a content block or safety issue
     $feedback = $data['promptFeedback'] ?? 'N/A';
     echo json_encode(['error' => 'Invalid or empty API response', 'data' => $data, 'feedback' => $feedback]);
     exit;
