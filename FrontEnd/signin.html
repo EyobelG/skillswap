@@ -115,6 +115,32 @@
             background: #6d28d9;
         }
 
+        .g-signin2 {
+            height: 32px;
+            margin-bottom: 20px;
+        }
+
+        .abcRioButton {
+            border: solid 1px var(--lightgray);
+
+            .abcRioButtonContentWrapper {
+                display: flex;
+                justify-content: center;
+
+                .abcRioButtonContents {
+                    span {
+                        font-family: Helvetica, Arial, sans-serif !important;
+                        font-weight: 600 !important;
+                        font-size: 1rem !important;
+                    }
+                    span::after {
+                        content: " with Google";
+                    }
+                }
+            }
+        }
+        
+
         button[type="submit"]:disabled {
             opacity: 0.6;
             cursor: not-allowed;
@@ -140,44 +166,24 @@
     <meta name="google-signin-client_id" content="1087286650770-ctjshnie3q7rqf6njhuusruqkuo4udpe.apps.googleusercontent.com">
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="topnav" id="myTopnav">
-        <a href="index.html" class="logo">SkillSwap</a>
-        <div class="nav-links">
-            <a href="account.html">Account</a>
-            <a href="members.html">Members</a>
-            <a href="contact.html">Contact Us</a>
-            <a href="sign_up.html" class="active">Sign Up</a>
-        </div>
-        <a class="icon" onclick="toggleMenu()">
-            <i class="fa fa-bars"></i>
-        </a>
-    </nav>
+    <main class="card" aria-labelledby="signup-title">
+        <h1 id="signup-title">Sign In</h1>
 
-    <main>
-        <div class="card" aria-labelledby="signup-title">
-            <h1 id="signup-title">Sign Up</h1>
+        <form id="signup" action="#" method="post">
+            <label for="email">Email address</label>
+            <input id="email" name="email" type="email" autocomplete="email" required />
 
-            <form id="signup" action="#" method="post">
-                <label for="fullName">Full name</label>
-                <input id="fullName" name="fullName" type="text" autocomplete="name" required autofocus />
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" minlength="8" required
+                   autocomplete="new-password" />
 
-                <label for="email">Email address</label>
-                <input id="email" name="email" type="email" autocomplete="email" required />
-
-                <label for="password">Password</label>
-                <input id="password" name="password" type="password" minlength="8" required
-                    placeholder="At least 8 characters" autocomplete="new-password" />
-
-                <div id="error" class="error" role="alert" aria-live="assertive"></div>
-
-                <button id="submitBtn" type="submit" disabled>Create account</button>
+            <button id="submitBtn" type="submit" disabled>Sign in</button>
 
                 <div class="g-signin2" data-onsuccess="onSignIn"></div>
 
-                <div class="muted">Already have an account? <a href="#">Sign in</a></div>
-            </form>
-        </div>
+
+            <div class="muted">Don't have an account? <a href="./signup.html" style="color:var(--accent);text-decoration:none">Sign up</a></div>
+        </form>
     </main>
 
     <!-- Footer -->
@@ -204,10 +210,8 @@
 
         window.onload = () => {
             const form = document.getElementById("signup");
-            const fullName = document.getElementById("fullName");
             const email = document.getElementById("email");
             const password = document.getElementById("password");
-            const error = document.getElementById("error");
             const submitBtn = document.getElementById("submitBtn");
 
             submitBtn.disabled = true;
@@ -218,12 +222,8 @@
             }
 
             form.addEventListener("change", function(e) {
-                showError("");
-
-                if (fullName.value.length < 1) {
+                if (email.value.length < 1) {
                     e.preventDefault();
-                    showError("Please enter your name.");
-                    fullName.focus();
                     submitBtn.disabled = true;
                 } else if (!email.validity.valid) {
                     e.preventDefault();
@@ -239,14 +239,16 @@
                 }
             });
 
+            form.addEventListener("submit", function(e){
+                if (email.value.length < 1) {
             form.addEventListener("submit", function(e) {
                 showError("");
 
                 if (fullName.value.length < 1) {
                     e.preventDefault();
-                    showError("Please enter your name.");
                     fullName.focus();
                     return;
+                } else if (password.value.length < 8){
                 } else if (!email.validity.valid) {
                     e.preventDefault();
                     showError("Enter a valid email address.");
@@ -254,11 +256,15 @@
                     return;
                 } else if (password.value.length < 8) {
                     e.preventDefault();
-                    showError("Password must be at least 8 characters.");
                     password.focus();
                     return;
                 }
 
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = "Logging in...";
+
+                // POST
                 // Simulate submission
                 e.preventDefault();
                 submitBtn.disabled = true;
