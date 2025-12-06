@@ -18,6 +18,7 @@
         color: #6b7280;
         font-weight: 600;
         font-size: 1.5rem;
+        margin-bottom: 20px;
     }
 </style>
 
@@ -29,6 +30,12 @@
     $db_pass = 'cs20finalproj';
     $db_name = 'dbdtf6cle3tkfo';
 
+    $members_host = 'localhost';
+    $members_user = 'utnq9qzvkroxc';
+    $members_pass = 'cs20finalproj';
+    $members_name = 'dbfxsgcb4otskb';
+
+
     $fullName = $_POST['fullName'];
     $email    = $_POST['email'];
     $password = $_POST['password'];
@@ -38,6 +45,11 @@
     $mysqli = new mysqli($db_host, $db_user, $db_pass, $db_name);
     if ($mysqli->connect_error) {
         die("Connection failed: " . $mysqli->connect_error);
+    }
+
+    $mysqli_members = new mysqli($members_host, $members_user, $members_pass, $members_name);
+    if ($mysqli_members->connect_error) {
+        die("Connection failed: " . $mysqli_members->connect_error);
     }
 
     try {
@@ -71,11 +83,14 @@
             throw new Exception("ERROR: database connection lost");
         }
 
-        if ($mysqli->query("INSERT INTO users (user_id, name, email, password) VALUES ('$user_id', '$fullName', '$email', '$password_hash')") == TRUE) {
+        if ($mysqli->query("INSERT INTO users (user_id, name, email, password) VALUES ('$user_id', '$fullName', '$email', '$password_hash')") == TRUE
+            &&
+            $mysqli_members->query("INSERT INTO Members (name, user_id) VALUES ('$fullName', '$user_id')") == TRUE) {
             echo "Success!";
         } else {
             throw new Exception("ERROR: could not insert into database");
         }
+
     } catch (Exception $e) {
         echo $e->getMessage();
         $error = TRUE;
