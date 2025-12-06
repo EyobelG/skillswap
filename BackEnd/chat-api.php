@@ -3,8 +3,7 @@
 
 // Load config from same directory
 $config = require __DIR__ . '/.env.php';
-// $API_KEY = $config['GEMINI_API_KEY'];
-$API_KEY = 'AIzaSyBYQBcQV605-KFwgyqJ3LG5aoutZPIZpF4';
+$API_KEY = $config['GEMINI_API_KEY'];
 
 if (!$API_KEY) {
     http_response_code(500);
