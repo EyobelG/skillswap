@@ -3,6 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="main.js" defer></script>
     <title>Sign Up</title>
     <style>
         :root {
@@ -11,17 +13,39 @@
             --card: #ffffff;
             --accent: #2563eb;
             --muted: #6b7280;
+            --lakers-purple: #552583;
+            --lakers-purple-light: #7c3aed;
+            --lakers-gold: #fdb927;
+            --gold: #fdb927;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
         }
 
         body {
-            margin: 0;
             font-family: Helvetica, Arial, sans-serif;
-            background: linear-gradient(180deg,var(--bg),#fff);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: #111827;
+            background: var(--bg);
+            padding-top: 50px; /* Account for fixed navbar */
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            color: #111827;
+            padding: 2rem 1rem;
         }
 
         .card {
@@ -36,13 +60,13 @@
         h1 {
             margin: 0 0 1rem;
             font-weight: 600;
-            font-size: 1.5rem
+            font-size: 1.5rem;
         }
 
         label {
             display: block;
             margin-bottom: 0.25rem;
-            font-weight: 00;
+            font-weight: 500;
             font-size: 0.9rem;
         }
 
@@ -56,26 +80,39 @@
             font-size: 0.95rem;
         }
 
-        button[type="submit"], .abcRioButton {
+        input:focus {
+            outline: none;
+            border-color: var(--lakers-purple);
+            box-shadow: 0 0 0 3px rgba(85, 37, 131, 0.1);
+        }
+
+        .error {
+            color: #b91c1c;
+            font-size: 0.9rem;
+            margin: 0 0 0.75rem;
+            display: none;
+        }
+
+        button[type="submit"], .g-signin2 {
             margin: 0;
             border: 0;
-            border-radius: 8px !important;
-            box-shadow: 2px 2px 3px var(--lightgray) !important;
+            border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            width: 100% !important;
+            width: 100%;
             font-size: 1rem;
         }
 
         button[type="submit"] {
             padding: 0.7rem 0.9rem;
-            background: var(--accent);
+            background: var(--lakers-purple);
             margin-bottom: 10px;
             color: #fff;
+            transition: background-color 0.3s;
         }
 
-        button:hover {
-            box-shadow: 2px 2px 3px var(--lightgray) !important;
+        button[type="submit"]:hover:not(:disabled) {
+            background: #6d28d9;
         }
 
         .g-signin2 {
@@ -106,14 +143,23 @@
 
         button[type="submit"]:disabled {
             opacity: 0.6;
-            cursor: default;
+            cursor: not-allowed;
         }
 
-        .muted{
+        .muted {
             color: var(--muted);
             font-size: 0.85rem;
             margin-top: 0.75rem;
-            text-align:center;
+            text-align: center;
+        }
+
+        .muted a {
+            color: var(--lakers-purple);
+            text-decoration: none;
+        }
+
+        .muted a:hover {
+            text-decoration: underline;
         }
     </style>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
@@ -133,14 +179,35 @@
 
             <button id="submitBtn" type="submit" disabled>Sign in</button>
 
-            <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                <div class="g-signin2" data-onsuccess="onSignIn"></div>
 
 
             <div class="muted">Don't have an account? <a href="./signup.html" style="color:var(--accent);text-decoration:none">Sign up</a></div>
         </form>
     </main>
 
+    <!-- Footer -->
+    <div id="footer-container">
+        <footer class="site-footer">
+            <p>&copy; 2024 SkillSwap. All rights reserved.</p>
+            <p>
+                <a href="#">Privacy Policy</a> | 
+                <a href="#">Terms of Service</a> | 
+                <a href="contact.html">Contact Us</a>
+            </p>
+        </footer>
+    </div>
+
     <script>
+        function toggleMenu() {
+            const navLinks = document.querySelector(".nav-links");
+            if (navLinks.style.display === "block") {
+                navLinks.style.display = "none";
+            } else {
+                navLinks.style.display = "block";
+            }
+        }
+
         window.onload = () => {
             const form = document.getElementById("signup");
             const email = document.getElementById("email");
@@ -149,7 +216,7 @@
 
             submitBtn.disabled = true;
 
-            function showError(message){
+            function showError(message) {
                 error.textContent = message;
                 error.style.display = message !== "" ? "block" : "none";
             }
@@ -158,8 +225,14 @@
                 if (email.value.length < 1) {
                     e.preventDefault();
                     submitBtn.disabled = true;
-                } else if (password.value.length < 1){
+                } else if (!email.validity.valid) {
                     e.preventDefault();
+                    showError("Enter a valid email address.");
+                    email.focus();
+                    submitBtn.disabled = true;
+                } else if (password.value.length < 8) {
+                    e.preventDefault();
+                    showError('Password must be at least 8 characters.');
                     submitBtn.disabled = true;
                 } else {
                     submitBtn.disabled = false;
@@ -168,10 +241,20 @@
 
             form.addEventListener("submit", function(e){
                 if (email.value.length < 1) {
+            form.addEventListener("submit", function(e) {
+                showError("");
+
+                if (fullName.value.length < 1) {
                     e.preventDefault();
                     fullName.focus();
                     return;
                 } else if (password.value.length < 8){
+                } else if (!email.validity.valid) {
+                    e.preventDefault();
+                    showError("Enter a valid email address.");
+                    email.focus();
+                    return;
+                } else if (password.value.length < 8) {
                     e.preventDefault();
                     password.focus();
                     return;
@@ -182,6 +265,18 @@
                 submitBtn.textContent = "Logging in...";
 
                 // POST
+                // Simulate submission
+                e.preventDefault();
+                submitBtn.disabled = true;
+                submitBtn.textContent = "Creating…";
+
+                setTimeout(() => {
+                    showError('');
+                    alert("Account created (demo).");
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "Create account";
+                    form.reset();
+                }, 900);
             });
         };
     </script>
