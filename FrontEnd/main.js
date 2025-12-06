@@ -44,9 +44,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 card.innerHTML = `
                     <h2>${member.name}</h2>
+
                     <p><strong>Description:</strong> ${member.description}</p>
-                    <p><strong>Willing to Teach:</strong> ${member.categories.join(", ")}</p>
-                    <p><strong>Wants to Learn:</strong> ${member.wantsToLearn.join(", ")}</p>
+
+                    <p><strong>Willing to Teach:</strong><br>
+                        ${member.categories.map(cat => `<span class="member-tag-list">${cat}</span>`).join("")}
+                    </p>
+
+                    <p><strong>Wants to Learn:</strong><br>
+                        ${member.wantsToLearn.map(w => `<span class="member-tag-list">${w}</span>`).join("")}
+                    </p>
                 `;
 
                 container.appendChild(card);
