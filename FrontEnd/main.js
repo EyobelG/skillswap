@@ -28,31 +28,46 @@ document.addEventListener('DOMContentLoaded', function() {
 
 //CODE TO LOAD MEMBERS FROM DATABASE
 document.addEventListener("DOMContentLoaded", () => {
-    fetch("../BackEnd/database.php")
+    fetch("../backend/database.php")
         .then(response => response.json())
         .then(members => {
             const container = document.getElementById("members-container");
 
-            if (!members.length) {
+            // Ensure members is a valid array
+            if (!Array.isArray(members) || members.length === 0) {
                 container.innerHTML = "<p>No members found.</p>";
                 return;
             }
 
             members.forEach(member => {
+                // Normalize all fields to avoid null errors
+                const name = member?.name || "Unknown Member";
+                const description = member?.description || "No description available.";
+                const categories = Array.isArray(member?.categories) ? member.categories : [];
+                const wantsToLearn = Array.isArray(member?.wantsToLearn) ? member.wantsToLearn : [];
+
                 const card = document.createElement("div");
                 card.classList.add("member-card");
 
                 card.innerHTML = `
-                    <h2>${member.name}</h2>
+                    <h2>${name}</h2>
 
-                    <p><strong>Description:</strong> ${member.description}</p>
+                    <p><strong>Description:</strong> ${description}</p>
 
                     <p><strong>Willing to Teach:</strong><br>
-                        ${member.categories.map(cat => `<span class="member-tag-list">${cat}</span>`).join("")}
+                        ${
+                            categories.length
+                                ? categories.map(cat => `<span class="member-tag-list">${cat}</span>`).join("")
+                                : "<em>No subjects listed.</em>"
+                        }
                     </p>
 
                     <p><strong>Wants to Learn:</strong><br>
-                        ${member.wantsToLearn.map(w => `<span class="member-tag-list">${w}</span>`).join("")}
+                        ${
+                            wantsToLearn.length
+                                ? wantsToLearn.map(w => `<span class="member-tag-list">${w}</span>`).join("")
+                                : "<em>No preferences listed.</em>"
+                        }
                     </p>
                 `;
 
@@ -61,8 +76,9 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch(error => {
             console.error("Error fetching members:", error);
+            document.getElementById("members-container").innerHTML =
+                "<p>Error loading members.</p>";
         });
-
 });
 //CODE TO LOAD MEMBERS FROM DATABASE
 //RESPONSIVE NAVBAR CODE
