@@ -23,7 +23,7 @@
         "age": 30,
         "description": "Professional chef offering cooking classes in various cuisines including Italian, Indian, and Mediterranean.",
         "categories": ["Cooking", "Chef"],
-        "image": "aisha.jpg"
+        "image": "images/genevieve.jpg"
     },
 
     {
@@ -32,7 +32,7 @@
         "age": 27,
         "description": "Professional bowling coach with 10 years of experience in training beginners and advanced players.",
         "categories": ["Bowling", "Coach"],
-        "image": "jake.jpg"
+        "image": "images/genevieve.jpg"
     },
     {
         "name": "Olivia Brown",
@@ -40,7 +40,7 @@
         "age": 26,
         "description": "Certified personal trainer specializing in strength training, cardio, and nutrition guidance.",
         "categories": ["Sports", "Personal Trainer"],
-        "image": "olivia.jpg"
+        "image": "images/genevieve.jpg"
     },
     {
         "name": "Liam Garcia",
@@ -48,7 +48,7 @@
         "age": 32,
         "description": "Experienced soccer coach offering training for youth and adult players, focusing on skills development and teamwork.",
         "categories": ["Soccer", "Coach"],
-        "image": "liam.jpg"
+        "image": "images/genevieve.jpg"
     },
     {
         "name": "Sophia Lee",
@@ -56,7 +56,7 @@
         "age": 24,
         "description": "Piano teacher with a passion for classical and contemporary music, catering to students of all ages and skill levels.",
         "categories": ["Music", "Piano", "Tutor"],
-        "image": "sophia.jpg"
+        "image": "images/genevieve.jpg"
     },
     {
         "name": "Emma Wilson",
@@ -64,7 +64,7 @@
         "age": 28,
         "description": "Certified yoga instructor specializing in Hatha and Vinyasa yoga, promoting physical and mental well-being.",
         "categories": ["Yoga", "Instructor"],
-        "image": "emma.jpg"
+        "image": "images/genevieve.jpg"
     },
     {
         "name": "Noah Martinez",
@@ -72,7 +72,7 @@
         "age": 31,
         "description": "Experienced basketball coach focusing on skill development, strategy, and teamwork for players of all levels.",
         "categories": ["Basketball", "Coach"],
-        "image": "noah.jpg"
+        "image": "images/genevieve.jpg"
     }, 
     {
         "name": "Isabella Hernandez",
@@ -80,7 +80,7 @@
         "age": 29,
         "description": "Professional gardener offering lessons in plant care, landscaping, and sustainable gardening practices.",
         "categories": ["Gardening", "Instructor"],
-        "image": "isabella.jpg"
+        "image": "images/genevieve.jpg"
     },
     {
         "name": "Ethan Robinson",
@@ -88,7 +88,7 @@
         "age": 27,
         "description": "Experienced pet trainer specializing in obedience training, behavior modification, and agility training for dogs.",
         "categories": ["Pets", "Trainer"],
-        "image": "ethan.jpg"
+        "image": "images/genevieve.jpg"
     },
     {
         "name": "Ava Clark",
@@ -96,7 +96,7 @@
         "age": 26,
         "description": "Outdoor survival skills instructor with expertise in wilderness navigation, shelter building, and foraging.",
         "categories": ["Outdoors", "Instructor"],
-        "image": "ava.jpg"
+        "image": "images/genevieve.jpg"
     },
     {
         "name": "James Lewis",
@@ -104,7 +104,7 @@
         "age": 33,
         "description": "Fishing guide and instructor with extensive knowledge of freshwater and saltwater fishing techniques.",
         "categories": ["Outdoors", "Fishing", "Guide"],
-        "image": "james.jpg"
+        "image": "images/genevieve.jpg"
     },
     {
         "name": "Mia Walker",
@@ -112,7 +112,7 @@
         "age": 30,
         "description": "Hiking guide specializing in trail navigation, safety, and outdoor skills for all experience levels.",
         "categories": ["Outdoors", "Hiking", "Guide"],
-        "image": "mia.jpg"
+        "image": "images/genevieve.jpg"
     }
 
 

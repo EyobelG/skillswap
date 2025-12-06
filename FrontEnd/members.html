@@ -1,29 +1,512 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SkillSwap - Members</title>
+    <title>Skill Swap - Our Members</title>
     <link rel="stylesheet" href="style.css">
     <script src="main.js" defer></script>
-</head>
-<body>
-    <h1>Meet Our Members</h1>
-
-    <div id="members-container">
-
-        
-    </div>
-
-    <div id="footer-container"></div>
-
-
     <style>
-        h1 {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            min-height: 100vh !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            padding: 20px !important;
+            overflow-x: hidden !important;
+        }
+
+        .header {
             text-align: center;
-            margin-top: 50px;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .slideshow-container {
+            max-width: 900px;
+            width: 100%;
+            position: relative;
+            margin: 0 auto;
+            perspective: 1000px;
+        }
+
+        .member-card {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideIn 0.8s ease;
+            transform-style: preserve-3d;
+        }
+
+        .member-card.active {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .member-image {
+            flex: 0 0 250px;
+            height: 250px;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 5px solid #667eea;
+            animation: rotateIn 1s ease;
+        }
+
+        .member-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .member-card:hover .member-image img {
+            transform: scale(1.1);
+        }
+
+        .member-info {
+            flex: 1;
+            animation: fadeIn 1s ease 0.3s both;
+        }
+
+        .member-name {
+            font-size: 2.5em;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .member-age {
+            color: #888;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        .member-description {
+            color: #555;
+            line-height: 1.8;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        .member-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .category-tag {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 500;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+            animation: popIn 0.5s ease backwards;
+        }
+
+        .category-tag:nth-child(1) { animation-delay: 0.4s; }
+        .category-tag:nth-child(2) { animation-delay: 0.5s; }
+        .category-tag:nth-child(3) { animation-delay: 0.6s; }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .nav-btn {
+            background: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .dots-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: white;
+            transform: scale(1.3);
+        }
+
+        .counter {
+            color: white;
+            font-size: 1.2em;
+            font-weight: 500;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px) rotateY(20deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) rotateY(0);
+            }
+        }
+
+        @keyframes rotateIn {
+            from {
+                opacity: 0;
+                transform: rotate(-180deg) scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: rotate(0) scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .member-card.active {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .member-image {
+                flex: 0 0 200px;
+                height: 200px;
+            }
+
+            .member-name {
+                font-size: 2em;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
         }
     </style>
+</head>
+<body>
+    <div class="header">
+        <h1> Our Amazing Members</h1>
+        <p>Discover talented instructors ready to share their skills</p>
+    </div>
+
+    <div class="slideshow-container" id="slideshow">
+        <!-- Member cards will be inserted here -->
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" onclick="changeSlide(-1)">‹</button>
+        <div class="counter">
+            <span id="current">1</span> / <span id="total">0</span>
+        </div>
+        <div class="dots-container" id="dots"></div>
+        <button class="nav-btn" onclick="changeSlide(1)">›</button>
+    </div>
+    <div id="footer-container"></div>
+    <script>
+        // Member data
+        const members = [
+            {
+                "name": "Geneviève DuPont",
+                "user-id": "gen-dup",
+                "age": 38,
+                "description": "Experienced French tutor offering personalized lessons for beginners to advanced learners. Specializes in conversational skills and exam preparation.",
+                "categories": ["French", "Tutor"],
+                "image": "images/genevieve.jpg"
+            },
+            {
+                "name": "Miguel Alvarez",
+                "user-id": "mig-alv",
+                "age": 29,
+                "description": "Guitar teacher focusing on acoustic technique, chords, and beginner music theory. Lessons tailored to adults and teens.",
+                "categories": ["Music", "Guitar", "Tutor"],
+                "image": "images/miguel.jpg"
+            },
+            {
+                "name": "Aisha Khan",
+                "user-id": "aish-kha",
+                "age": 30,
+                "description": "Professional chef offering cooking classes in various cuisines including Italian, Indian, and Mediterranean.",
+                "categories": ["Cooking", "Chef"],
+                "image": "images/Aisha.jpg"
+            },
+            {
+                "name": "Jake Thompson",
+                "user-id": "jake-tho",
+                "age": 27,
+                "description": "Professional bowling coach with 10 years of experience in training beginners and advanced players.",
+                "categories": ["Bowling", "Coach"],
+                "image": "images/jake.png"
+            },
+            {
+                "name": "Olivia Brown",
+                "user-id": "oliv-bro",
+                "age": 26,
+                "description": "Certified personal trainer specializing in strength training, cardio, and nutrition guidance.",
+                "categories": ["Sports", "Personal Trainer"],
+                "image": "images/olivia.jpg"
+            },
+            {
+                "name": "Liam Garcia",
+                "user-id": "liam-gar",
+                "age": 32,
+                "description": "Experienced soccer coach offering training for youth and adult players, focusing on skills development and teamwork.",
+                "categories": ["Soccer", "Coach"],
+                "image": "images/liam.png"
+            },
+            {
+                "name": "Sophia Lee",
+                "user-id": "soph-lee",
+                "age": 24,
+                "description": "Piano teacher with a passion for classical and contemporary music, catering to students of all ages and skill levels.",
+                "categories": ["Music", "Piano", "Tutor"],
+                "image": "images/sophia.png"
+            },
+            {
+                "name": "Emma Wilson",
+                "user-id": "emma-wil",
+                "age": 28,
+                "description": "Certified yoga instructor specializing in Hatha and Vinyasa yoga, promoting physical and mental well-being.",
+                "categories": ["Yoga", "Instructor"],
+                "image": "images/emma.jpg"
+            },
+            {
+                "name": "Noah Martinez",
+                "user-id": "noah-mar",
+                "age": 31,
+                "description": "Experienced basketball coach focusing on skill development, strategy, and teamwork for players of all levels.",
+                "categories": ["Basketball", "Coach"],
+                "image": "images/noah.jpg"
+            },
+            {
+                "name": "Isabella Hernandez",
+                "user-id": "isab-her",
+                "age": 29,
+                "description": "Professional gardener offering lessons in plant care, landscaping, and sustainable gardening practices.",
+                "categories": ["Gardening", "Instructor"],
+                "image": "images/isabella.jpg"
+            },
+            {
+                "name": "Ethan Robinson",
+                "user-id": "ethan-rob",
+                "age": 27,
+                "description": "Experienced pet trainer specializing in obedience training, behavior modification, and agility training for dogs.",
+                "categories": ["Pets", "Trainer"],
+                "image": "images/ethan.jpg"
+            },
+            {
+                "name": "Ava Clark",
+                "user-id": "ava-cla",
+                "age": 26,
+                "description": "Outdoor survival skills instructor with expertise in wilderness navigation, shelter building, and foraging.",
+                "categories": ["Outdoors", "Instructor"],
+                "image": "images/ava.jpg"
+            },
+            {
+                "name": "James Lewis",
+                "user-id": "jame-lew",
+                "age": 33,
+                "description": "Fishing guide and instructor with extensive knowledge of freshwater and saltwater fishing techniques.",
+                "categories": ["Outdoors", "Fishing", "Guide"],
+                "image": "images/james.jpg"
+            },
+            {
+                "name": "Mia Walker",
+                "user-id": "mia-wal",
+                "age": 30,
+                "description": "Hiking guide specializing in trail navigation, safety, and outdoor skills for all experience levels.",
+                "categories": ["Outdoors", "Hiking", "Guide"],
+                "image": "images/mia.jpg"
+            }
+        ];
+
+        let currentSlide = 0;
+        let autoPlayInterval;
+
+        // Initialize slideshow
+        function initSlideshow() {
+            const container = document.getElementById('slideshow');
+            const dotsContainer = document.getElementById('dots');
+            
+            // Create member cards
+            members.forEach((member, index) => {
+                const card = document.createElement('div');
+                card.className = 'member-card';
+                card.innerHTML = `
+                    <div class="member-image">
+                        <img src="${member.image}" alt="${member.name}" onerror="this.src='https://via.placeholder.com/250?text=${encodeURIComponent(member.name)}'">
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name">${member.name}</div>
+                        <div class="member-age">Age: ${member.age}</div>
+                        <div class="member-description">${member.description}</div>
+                        <div class="member-categories">
+                            ${member.categories.map(cat => `<span class="category-tag">${cat}</span>`).join('')}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+
+                // Create dot
+                const dot = document.createElement('span');
+                dot.className = 'dot';
+                dot.onclick = () => goToSlide(index);
+                dotsContainer.appendChild(dot);
+            });
+
+            document.getElementById('total').textContent = members.length;
+            showSlide(0);
+            startAutoPlay();
+        }
+
+        // Show specific slide
+        function showSlide(n) {
+            const cards = document.querySelectorAll('.member-card');
+            const dots = document.querySelectorAll('.dot');
+            
+            if (n >= cards.length) currentSlide = 0;
+            if (n < 0) currentSlide = cards.length - 1;
+            
+            cards.forEach(card => card.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+            
+            cards[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+            document.getElementById('current').textContent = currentSlide + 1;
+        }
+
+        // Change slide
+        function changeSlide(direction) {
+            currentSlide += direction;
+            showSlide(currentSlide);
+            resetAutoPlay();
+        }
+
+        // Go to specific slide
+        function goToSlide(n) {
+            currentSlide = n;
+            showSlide(currentSlide);
+            resetAutoPlay();
+        }
+
+        // Auto-play functionality
+        function startAutoPlay() {
+            autoPlayInterval = setInterval(() => {
+                currentSlide++;
+                showSlide(currentSlide);
+            }, 5000); // Change slide every 5 seconds
+        }
+
+        function resetAutoPlay() {
+            clearInterval(autoPlayInterval);
+            startAutoPlay();
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        // Touch/swipe support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) changeSlide(1);
+            if (touchEndX > touchStartX + 50) changeSlide(-1);
+        }
+
+        // Initialize on page load
+        window.onload = initSlideshow;
+    </script>
 </body>
 </html>
