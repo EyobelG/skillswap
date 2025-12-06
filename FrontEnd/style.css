@@ -85,6 +85,8 @@ body {
   text-decoration: none;
   font-size: 22px;
   color: var(--lakers-gold);
+  background: none;
+  border: none;
 }
 
 .topnav a.icon:hover {
@@ -162,3 +164,25 @@ body {
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 } */
 /* MEMBERS STYLES */
+
+@media (max-width: 768px) {
+    .topnav .nav-links {
+        display: none;
+        float: none;
+        width: 100%;
+    }
+
+    .topnav.responsive .nav-links {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 50px;
+        left: 0;
+        background-color: var(--lakers-purple);
+        width: 100%;
+    }
+
+    .topnav .icon {
+        display: block;
+    }
+}
