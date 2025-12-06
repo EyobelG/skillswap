@@ -3,7 +3,8 @@
 
 // Load config from same directory
 $config = require __DIR__ . '/.env.php';
-$API_KEY = $config['GEMINI_API_KEY'];
+// $API_KEY = $config['GEMINI_API_KEY'];
+$API_KEY = 'AIzaSyBYQBcQV605-KFwgyqJ3LG5aoutZPIZpF4';
 
 if (!$API_KEY) {
     http_response_code(500);
@@ -46,7 +47,8 @@ Your personality and speaking style should match your profession:
 - Keep responses conversational and not too long (2-4 sentences typically)
 - Use your expertise naturally in conversation
 
-Remember: You are chatting with a potential student who wants to learn from you.";
+Remember: You are chatting with a potential student who wants to learn from you, 
+and potentially swap skills.";
 
 // Use the system instruction field for better model control (recommended practice)
 $promptContent = "User message: {$userMessage}\n\nRespond as {$memberName}:";
