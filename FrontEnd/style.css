@@ -6,126 +6,138 @@ body {
     cursor: pointer;
 }
 /* WHOLE BODY STYLES */
-
+ :root {
+            --bg: #f4f7fb;
+            --lightgray: #e6e9ef;
+            --card: #ffffff;
+            --accent: #2563eb;
+            --muted: #6b7280;
+            --lakers-purple: #552583;
+            --lakers-purple-light: #7c3aed;
+            --lakers-gold: #fdb927;
+            --gold: #fdb927;
+}
 /*#region NAVBAR STYLES */
 .topnav {
-  background-color: var(--lakers-purple-light) !important;
-  overflow: hidden !important;
-  position: fixed !important;
-  width: 100% !important;
-  height: 50px !important;
-  top: 0 !important;
-  z-index: 10 !important;
+  background-color: var(--lakers-purple);
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 50px;
+  top: 0;
+  z-index: 10;
 }
 
 .topnav a {
-  float: left !important;
-  color: var(--lakers-gold) !important;
-  text-align: center !important;
-  padding: 12px 16px !important;
-  text-decoration: none !important;
-  font-size: 22px !important;
-  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif !important;
-  transition: background-color 0.3s ease !important;
+  float: left;
+  color: var(--lakers-gold);
+  text-align: center;
+  padding: 12px 16px;
+  text-decoration: none;
+  font-size: 22px;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  transition: background-color 0.3s ease;
 }
 
 .topnav a:hover {
-  background-color: var(--lakers-purple) !important;
-  color: var(--lakers-gold) !important;
+  background-color: var(--lakers-purple);
+  color: var(--lakers-gold);
 }
 
 .topnav a.active {
-  background-color: var(--lakers-purple) !important;
-  color: var(--lakers-gold) !important;
+  background-color: var(--lakers-purple);
+  color: var(--lakers-gold);
 }
 
 .logo {
-  font-size: 28px !important;
-  font-weight: bold !important;
-  color: var(--gold) !important;
-  font-style: italic !important;
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--gold);
+  font-style: italic;
 }
 
 .logo:hover {
-  animation: bounce 0.6s ease !important;
-  color: white !important;
-  text-shadow: 0 0 15px var(--lakers-gold) !important;
+  animation: bounce 0.6s ease;
+  color: white;
+  text-shadow: 0 0 15px var(--lakers-gold);
 }
 
 @keyframes bounce {
-  0%, 100% { transform: translateY(0) !important; }
-  25% { transform: translateY(-10px) !important; }
-  50% { transform: translateY(-5px) !important; }
-  75% { transform: translateY(-8px) !important; }
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-10px); }
+  50% { transform: translateY(-5px); }
+  75% { transform: translateY(-8px); }
 }
 
 .topnav .nav-links {
-  display: flex !important;
-  float: right !important;
+  display: flex;
+  float: right;
 }
 
 .topnav .icon {
-  display: none !important;
-  text-align: center !important;
-  padding: 12px 16px !important;
-  text-decoration: none !important;
-  font-size: 22px !important;
-  color: var(--lakers-gold) !important;
+  display: none;
+  text-align: center;
+  padding: 12px 16px;
+  text-decoration: none;
+  font-size: 22px;
+  color: var(--lakers-gold);
 }
 
 .topnav a.icon:hover {
-  background-color: var(--lakers-purple) !important;
-  color: var(--lakers-gold) !important;
+  background-color: var(--lakers-purple);
+  color: var(--lakers-gold);
 }
 /*#endregion NAVBAR STYLES */
 
 /* FOOTER STYLES (from midterm website) */
 #footer-container {
-    margin-top: auto !important;
-    position: relative !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    text-align: center !important;
-    z-index: 1000 !important;
-    width: 100% !important;
-    background-color: #552583;
-    height: 100px;
-  }
+  margin-top: auto;
+  position: relative;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  z-index: 1000;
+  width: 100%;
+  background-color: #552583;
+  height: 100px;
+}
+/* Site Footer - This is the actual footer content loaded from footer.html */
+.site-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #552583;
+  color: #fdb927;
+  border-top: 3px solid #552583;
+  width: 100%;
+  padding: 20px 0;
+  box-sizing: border-box;
+  text-align: center;
+  font-family: "Times New Roman", Times, serif;
+  position: relative;
+  bottom: 0;
+}
 
-  .site-footer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #552583;
-    color: #fdb927;
-    border-top: 3px solid #552583;
-    width: 100%;
-    padding: 20px 0;
-    box-sizing: border-box;
-    text-align: center;
-    font-family: "Times New Roman", Times, serif;
-    position: relative;
-    bottom: 0;
-  }
-  
-  .site-footer p {
-    margin: 0 0 10px 0;
-    font-size: 0.9rem;
-    padding: 0 5px;
-    justify-content: center !important;
-    text-align: center !important;
-  }
-  
-  .site-footer a {
-    color: #fdb927;
-    text-decoration: none;
-    font-size: 0.9rem;
-    padding: 0 5px;
-  }
-  
-  .site-footer a:hover {
-    text-decoration: underline;
-  }
+.site-footer p {
+  margin: 0 0 10px 0;
+  font-size: 0.9rem;
+  padding: 0 5px;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+.site-footer a {
+  color: #fdb927;
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0 5px;
+}
+
+.site-footer a:hover {
+  text-decoration: underline;
+}
+
+/*#endregion */
 /* FOOTER STYLES (from midterm website) */
 
 /* MEMBERS STYLES */
