@@ -39,8 +39,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
-            padding-top: 90px; /* Add space for fixed navbar */
+            justify-content: center;
             padding-bottom: 0;
             overflow-x: hidden;
         }
@@ -52,7 +51,6 @@
         }
 
         .card {
-            max-height: 500px;
             background: var(--card);
             padding: 2rem;
             border-radius: 12px;
@@ -282,6 +280,9 @@
                 <label for="fullName">Full name</label>
                 <input id="fullName" name="fullName" type="text" autocomplete="name" required autofocus />
 
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text" required autofocus />
+
                 <label for="email">Email address</label>
                 <input id="email" name="email" type="email" autocomplete="email" required />
 
@@ -307,6 +308,7 @@
         window.onload = () => {
             const form = document.getElementById("signup");
             const fullName = document.getElementById("fullName");
+            const username = document.getElementById("username");
             const email = document.getElementById("email");
             const password = document.getElementById("password");
             const error = document.getElementById("error");
@@ -321,10 +323,11 @@
             }
 
             let fullNameValid = false;
+            let usernameValid = false;
             let emailValid = false;
             let passwordValid = false;
 
-            fullName.addEventListener("change", function(e) {
+            fullName.addEventListener("input", function(e) {
                 showError("");
                 if (fullName.value.length < 1) {
                     e.preventDefault();
@@ -334,7 +337,17 @@
                     fullNameValid = true;
                 }
             });
-            email.addEventListener("change", function(e) {
+            username.addEventListener("input", function(e) {
+                showError("");
+                if (username.value.length < 1) {
+                    e.preventDefault();
+                    showError("Please enter a username.");
+                    usernameValid = false;
+                } else {
+                    usernameValid = true;
+                }
+            });
+            email.addEventListener("input", function(e) {
                 showError("");
                 if (email.classList.contains(":invalid")) {
                     e.preventDefault();
@@ -344,7 +357,7 @@
                     emailValid = true;
                 }
             });
-            password.addEventListener("change", function(e) {
+            password.addEventListener("input", function(e) {
                 showError("");
                 if (password.value.length < 8){
                     e.preventDefault();
@@ -355,8 +368,8 @@
                 }
             });
 
-            form.addEventListener("change", function(e) {
-                if (fullNameValid && emailValid && passwordValid) {
+            form.addEventListener("input", function(e) {
+                if (fullNameValid && usernameValid && emailValid && passwordValid) {
                     submitBtn.disabled = false;
                 } else {
                     submitBtn.disabled = true;
@@ -370,6 +383,11 @@
                     e.preventDefault();
                     showError("Please enter your name.");
                     fullName.focus();
+                    return;
+                } else if (username.value.length < 1) {
+                    e.preventDefault();
+                    showError("Please enter a username.");
+                    username.focus();
                     return;
                 } else if (email.classList.contains(":invalid")) {
                     e.preventDefault();
