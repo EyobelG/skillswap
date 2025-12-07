@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="style.css" />
+    <script src="main.js" defer></script>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
 
     <title>Sign In</title>
@@ -189,20 +190,18 @@
         <i class="fa fa-bars"></i>
       </a>
     </nav>
-    
-    <!-- <div id="header-container"></div> -->
 
     <main>
         <div class="card" aria-labelledby="signin-title">
             <h1 id="signin-title">Sign In</h1>
 
             <form id="signin" action="./signin.php" method="post">
-                <label for="email">Email address</label>
-                <input id="email" name="email" type="email" autocomplete="email" required autofocus />
+                <label for="email">Username or email</label>
+                <input id="email" name="email" type="text" autocomplete="username" required autofocus />
 
                 <label for="password">Password</label>
                 <input id="password" name="password" type="password" minlength="8" required
-                       autocomplete="current-password" />
+                       autocomplete="password" />
 
                 <div id="error" class="error" role="alert" aria-live="assertive"></div>
 
@@ -236,18 +235,18 @@
             let emailValid = false;
             let passwordValid = false;
 
-            email.addEventListener("change", function(e) {
+            email.addEventListener("input", function(e) {
                 showError("");
-                if (!email.validity.valid) {
+                if (email.value.length < 1){
                     e.preventDefault();
-                    showError("Enter a valid email address.");
+                    showError('Enter a username or email.');
                     emailValid = false;
                 } else {
                     emailValid = true;
                 }
             });
             
-            password.addEventListener("change", function(e) {
+            password.addEventListener("input", function(e) {
                 showError("");
                 if (password.value.length < 8){
                     e.preventDefault();
@@ -258,7 +257,7 @@
                 }
             });
 
-            form.addEventListener("change", function(e) {
+            form.addEventListener("input", function(e) {
                 if (emailValid && passwordValid) {
                     submitBtn.disabled = false;
                 } else {

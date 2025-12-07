@@ -36,11 +36,10 @@
     $members_name = 'dbfxsgcb4otskb';
 
 
-    $fullName = $_POST['fullName'];
-    $username = $_POST['username'];
     $email    = $_POST['email'];
     $password = $_POST['password'];
 
+    $validcredentials = FALSE;
     $error = FALSE;
 
     $mysqli = new mysqli($db_host, $db_user, $db_pass, $db_name);
@@ -54,13 +53,7 @@
     }
 
     try {
-        if ($fullName == NULL || $username == NULL || $email == NULL || $password == NULL) {
-            if ($fullName == NULL) {
-                echo "nnull";
-            }
-            if ($username == NULL) {
-                echo "unull";
-            }
+        if ($email == NULL || $password == NULL) {
             if ($email == NULL) {
                 echo "enull";
             }
@@ -70,42 +63,30 @@
             throw new Exception("You're probably seeing this message because you pressed the back button on your browser.");
         }
 
-        $fullName = trim($fullName);
-        $user_id = trim($username);
+        $user_id = trim($email);
         $email = trim($email);
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-        // check if email is already used
-        $result = mysqli_query($mysqli, "SELECT * FROM users WHERE email = '$email'");
-        if ($result) {
-            if (mysqli_num_rows($result) > 0) {
-                echo "<p>An account with this email address has already been created.</p>";
-                echo "<p>Please <a href=\"signin.html\">sign in</a> to continue.</p>";
-                throw new Exception("<p>ERROR: email already used</p>");
+        $unameresult = mysqli_query($mysqli, "SELECT * FROM users WHERE user_id = '$user_id'");
+        $emailresult = mysqli_query($mysqli, "SELECT * FROM users WHERE email = '$email'");
+        if ($unameresult && $emailresult) {
+            if (mysqli_num_rows($unameresult) == 1) { // check if username is in the db
+                $datarow = $unameresult->fetch_array();
+                if ($password_hash == $datarow["password"]) $validcredentials = true;
+            } else if (mysqli_num_rows($emailresult) == 1) { // check if email is in the db
+                $datarow = $emailresult->fetch_array();
+                if ($password_hash == $datarow["password"]) $validcredentials = true;
             }
         } else {
             throw new Exception("ERROR: database connection lost");
         }
 
-        // check if username is already used
-        $result = mysqli_query($mysqli, "SELECT * FROM users WHERE user_id = '$user_id'");
-        if ($result) {
-            if (mysqli_num_rows($result) > 0) {
-                echo "<p>An account with this username has already been created.</p>";
-                echo "<p>Please <a href=\"signup.html\">sign up</a> with a different username.</p>";
-                throw new Exception("<p>ERROR: username already used</p>");
-            }
-        } else {
-            throw new Exception("ERROR: database connection lost");
+        if (!$validcredentials) {
+            echo "<p>No account matches the information you entered.</p>";
+            echo "<p>Please try to <a href=\"signin.html\">sign in</a> again or <a href=\"signup.html\">sign up</a> to make an account.</p>";
+            throw new Exception("<p>ERROR: incorrect credentials</p>");
         }
 
-        if ($mysqli->query("INSERT INTO users (user_id, name, email, password) VALUES ('$user_id', '$fullName', '$email', '$password_hash')") == TRUE
-            &&
-            $mysqli_members->query("INSERT INTO Members (name, user_id) VALUES ('$fullName', '$user_id')") == TRUE) {
-            echo "Success!";
-        } else {
-            throw new Exception("ERROR: could not insert into database");
-        }
 
     } catch (Exception $e) {
         echo $e->getMessage();
