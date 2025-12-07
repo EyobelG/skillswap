@@ -27,52 +27,50 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 //CODE TO LOAD MEMBERS FROM DATABASE
+let allMembers = [];
+
 document.addEventListener("DOMContentLoaded", () => {
     fetch("../backend/database.php")
         .then(response => response.json())
         .then(members => {
             const container = document.getElementById("members-container");
 
-            // Ensure members is a valid array
             if (!Array.isArray(members) || members.length === 0) {
                 container.innerHTML = "<p>No members found.</p>";
                 return;
             }
 
-            members.forEach(member => {
-                // Normalize all fields to avoid null errors
-                const name = member?.name || "Unknown Member";
-                const description = member?.description || "No description available.";
-                const categories = Array.isArray(member?.categories) ? member.categories : [];
-                const wantsToLearn = Array.isArray(member?.wantsToLearn) ? member.wantsToLearn : [];
+            allMembers = members;
+            renderMembers(allMembers);
 
-                const card = document.createElement("div");
-                card.classList.add("member-card");
+            const teachInput = document.getElementById("teach-filter");
+            const learnInput = document.getElementById("learn-filter");
 
-                card.innerHTML = `
-                    <h2>${name}</h2>
+            function applyFilters() {
+                console.log("hello");
+                const teachQuery = teachInput.value.toLowerCase();
+                const learnQuery = learnInput.value.toLowerCase();
 
-                    <p><strong>Description:</strong> ${description}</p>
+                const filtered = allMembers.filter(member => {
+                    const categories = (member.categories || []).map(c => c.toLowerCase());
+                    const wants = (member.wantsToLearn || []).map(w => w.toLowerCase());
 
-                    <p><strong>Willing to Teach:</strong><br>
-                        ${
-                            categories.length
-                                ? categories.map(cat => `<span class="member-tag-list">${cat}</span>`).join("")
-                                : "<em>No subjects listed.</em>"
-                        }
-                    </p>
+                    const matchesTeach =
+                        !teachQuery ||
+                        categories.some(cat => cat.includes(teachQuery));
 
-                    <p><strong>Wants to Learn:</strong><br>
-                        ${
-                            wantsToLearn.length
-                                ? wantsToLearn.map(w => `<span class="member-tag-list">${w}</span>`).join("")
-                                : "<em>No preferences listed.</em>"
-                        }
-                    </p>
-                `;
+                    const matchesLearn =
+                        !learnQuery ||
+                        wants.some(w => w.includes(learnQuery));
 
-                container.appendChild(card);
-            });
+                    return matchesTeach && matchesLearn;
+                });
+
+                renderMembers(filtered);
+            }
+
+            const searchBtn = document.getElementById("search-btn");
+            searchBtn.addEventListener("click", applyFilters);
         })
         .catch(error => {
             console.error("Error fetching members:", error);
@@ -80,6 +78,50 @@ document.addEventListener("DOMContentLoaded", () => {
                 "<p>Error loading members.</p>";
         });
 });
+
+function renderMembers(members) {
+    console.log("hello!!!");
+    const container = document.getElementById("members-container");
+    container.innerHTML = "";
+
+    if (members.length === 0) {
+        container.innerHTML = "<p>No matching members found.</p>";
+        return;
+    }
+
+    members.forEach(member => {
+        const name = member?.name || "Unknown Member";
+        const description = member?.description || "No description available.";
+        const categories = Array.isArray(member?.categories) ? member.categories : [];
+        const wantsToLearn = Array.isArray(member?.wantsToLearn) ? member.wantsToLearn : [];
+
+        const card = document.createElement("div");
+        card.classList.add("member-card");
+
+        card.innerHTML = `
+            <h2>${name}</h2>
+            <p><strong>Description:</strong> ${description}</p>
+
+            <p><strong>Willing to Teach:</strong><br>
+                ${
+                    categories.length
+                        ? categories.map(cat => `<span class="member-tag-list">${cat}</span>`).join("")
+                        : "<em>No subjects listed.</em>"
+                }
+            </p>
+
+            <p><strong>Wants to Learn:</strong><br>
+                ${
+                    wantsToLearn.length
+                        ? wantsToLearn.map(w => `<span class="member-tag-list">${w}</span>`).join("")
+                        : "<em>No preferences listed.</em>"
+                }
+            </p>
+        `;
+
+        container.appendChild(card);
+    });
+}
 //CODE TO LOAD MEMBERS FROM DATABASE
 //RESPONSIVE NAVBAR CODE
 function toggleMenu() {
