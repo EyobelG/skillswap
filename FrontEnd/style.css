@@ -18,9 +18,9 @@ body {
             --gold: #fdb927;
 }
 /*#region NAVBAR STYLES */
-#header-container {
+/* #header-container {
   all: unset;
-}
+} */
 
 .topnav {
   background-color: var(--lakers-purple);
