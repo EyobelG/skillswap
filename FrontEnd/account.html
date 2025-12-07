@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="main.js" defer></script>
     <script src="header.js" defer></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     <link rel="stylesheet" href="style.css" />
+    
     <title>My Account</title>
     <style>
         * {
@@ -897,6 +902,17 @@
                     </div>
                     <button class="edit-btn" onclick="openEditModal('location')">Edit</button>
                 </div>
+                <div id="locationMapCard" class="main-section" style="margin-top: 2rem; padding: 2.5rem;">
+                    <h2 class="section-title" style="margin-bottom: 0.5rem;">📍 Set Your Public Location</h2>
+                        <p class="section-description" style="margin-bottom: 1rem;">
+                             Use the search box or drag the marker to set your approximate public meeting location.
+                        </p>
+
+                    <div id="geocoder-container" style="margin-bottom: 1rem;"></div> 
+
+                     <div id="profileMap" style="height: 400px; border-radius: 0.75rem; border: 2px solid rgba(251, 191, 36, 0.3);"></div>
+                     <button class="save-btn" style="margin-top: 1.5rem;" onclick="saveMapLocation()">Save Location</button>
+                </div>
             </div>
 
             <!-- BILLING SECTION -->
@@ -1333,6 +1349,157 @@
                 sidebar.classList.remove('active');
             }
         });
+
+        // --- LEAFLET CONFIG ---
+let map;
+let marker;
+let geocoder; 
+// Initial coordinates (Cambridge, MA)
+let currentCoords = { lat: 42.3736, lng: -71.1097 }; 
+// Stores the human-readable address fetched via reverse geocoding
+let savedLocationText = 'Cambridge, MA'; 
+// ---------------------
+
+// Section Navigation
+function showSection(section) {
+    document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+    // Note: Added null check for robustness
+    const menuItem = document.querySelector(`[onclick="showSection('${section}')"]`);
+    if (menuItem) {
+        menuItem.classList.add('active');
+    }
+
+    document.querySelectorAll('.main-section').forEach(s => s.classList.add('hidden'));
+    document.getElementById(section + 'Section').classList.remove('hidden');
+
+    // Close mobile menu (if implemented)
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar && window.innerWidth <= 768) {
+            sidebar.classList.remove('active');
+    }
+}
+
+// Dummy/Placeholder functions (required for HTML buttons to work)
+function openEditModal(field) {
+    currentField = field;
+    // Your modal logic here (e.g., displaying the modal)
+    console.log(`Opening edit modal for: ${field}`);
+}
+function saveEdit() { console.log('Saving edit...'); }
+function toggleMenu() { console.log('Toggling mobile menu...'); }
+
+// --- LEAFLET MAP FUNCTIONS ---
+
+/**
+ * Converts coordinates to a human-readable address using reverse geocoding
+ * and updates the UI (locationValue element) and the global savedLocationText.
+ */
+function reverseGeocodeAndUpdateUI(lat, lng) {
+    if (!geocoder) return;
+
+    const latLng = L.latLng(lat, lng);
+    const locationValueElement = document.getElementById('locationValue');
+    
+    // Set a temporary message while waiting for the API response
+    locationValueElement.textContent = '... Resolving Address ...';
+
+    // Use the reverse() method of the Nominatim geocoder
+    geocoder.reverse(latLng, map.options.crs.scale(map.getZoom()), (results) => {
+        let addressToDisplay = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`; // Default fallback
+
+        if (results.length > 0) {
+            // Use the first (best) result's address string
+            addressToDisplay = results[0].name;
+        } 
+        
+        // Update the visible text in the main profile section immediately
+        locationValueElement.textContent = addressToDisplay;
+        
+        // Store the current address globally for when the SAVE button is clicked
+        savedLocationText = addressToDisplay; 
+    });
+}
+
+// Function to update coordinates after drag or geocoding
+function onDragEnd() {
+    const latLng = marker.getLatLng();
+    currentCoords.lat = latLng.lat;
+    currentCoords.lng = latLng.lng;
+    
+    console.log(`Marker dragged. New coords: Lat ${currentCoords.lat}, Lng ${currentCoords.lng}`);
+
+    // Call the function to update the HTML field and savedLocationText
+    reverseGeocodeAndUpdateUI(currentCoords.lat, currentCoords.lng);
+    
+    map.panTo(latLng);
+}
+
+/**
+ * Saves the globally stored address and coordinates, finalizing the change
+ * in the profile display.
+ */
+function saveMapLocation() {
+    if (!savedLocationText || savedLocationText.includes('Resolving')) {
+        alert('Please wait for the location address to finish resolving before saving.');
+        return;
+    }
+    
+    // 1. Update the display in the profile section permanently
+    // This confirms to the user that the location they saw is the one that was saved
+    document.getElementById('locationValue').textContent = savedLocationText;
+    
+    // 2. Alert/Confirmation for the user
+    alert(`Location successfully saved to: ${savedLocationText} (Lat: ${currentCoords.lat.toFixed(4)}, Lng: ${currentCoords.lng.toFixed(4)})`);
+    
+    // 3. 🚨 REAL WORLD: Send AJAX request to server here
+    // This is where you would send currentCoords.lat, currentCoords.lng, and savedLocationText
+}
+
+
+// --- INITIALIZATION ---
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // Set initial location field text
+    document.getElementById('locationValue').textContent = savedLocationText;
+
+    // --- LEAFLET INITIALIZATION ---
+    map = L.map('profileMap').setView([currentCoords.lat, currentCoords.lng], 12);
+
+    // 1. Add Tile Layer (OpenStreetMap)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // 2. Add Draggable Marker
+    marker = L.marker([currentCoords.lat, currentCoords.lng], {
+        draggable: true
+    }).addTo(map);
+
+    marker.on('dragend', onDragEnd);
+
+    // 3. Add Geocoder (Search Box)
+    const nominatimGeocoding = L.Control.Geocoder.nominatim();
+    geocoder = nominatimGeocoding; 
+    
+    L.Control.geocoder({
+        geocoder: nominatimGeocoding,
+        position: 'topleft', 
+        placeholder: 'Search for your city or address...'
+    }).addTo(map);
+    
+    // Listen for when the user selects a search result
+    geocoder.on('markgeocode', function(e) {
+        const center = e.geocode.center;
+        map.setView(center, 14);
+        marker.setLatLng(center);
+        onDragEnd(); // This triggers the reverse geocoding update
+    });
+
+    // Initial reverse geocode lookup to populate the field on load
+    reverseGeocodeAndUpdateUI(currentCoords.lat, currentCoords.lng); 
+});
+
+
     </script>
 </body>
 </html>
