@@ -139,7 +139,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
 // Intersection Observer for scroll animations
 // Each image appears ONLY when you scroll to it
 const observerOptions = {
