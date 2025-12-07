@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="main.js" defer></script>
+    <link rel="stylesheet" href="style.css" />
     <title>My Account</title>
     <style>
         * {
@@ -34,7 +36,7 @@
         }
 
         /* Navigation Bar */
-        nav {
+        /* nav {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
             padding: 0;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -70,6 +72,89 @@
         .nav-button.active {
             background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);
             color: white;
+        } */
+
+
+        /* NAVBAR STYLES */
+        .topnav {
+            background-color: var(--lakers-purple);
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 50px;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .topnav a {
+            float: left;
+            color: var(--lakers-gold);
+            text-align: center;
+            padding: 12px 16px;
+            text-decoration: none;
+            font-size: 22px;
+            font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+            transition: background-color 0.3s ease;
+        }
+
+        .topnav a:hover {
+            background-color: var(--lakers-purple);
+            color: white;
+        }
+
+        .topnav a.active {
+            background-color: var(--lakers-purple);
+            color: var(--lakers-gold);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--lakers-gold);
+            font-style: italic;
+        }
+
+        .logo:hover {
+            animation: bounce 0.6s ease;
+            color: white;
+            text-shadow: 0 0 15px var(--lakers-gold);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            25% { transform: translateY(-10px); }
+            50% { transform: translateY(-5px); }
+            75% { transform: translateY(-8px); }
+        }
+
+        .topnav .nav-links {
+            display: flex;
+            float: right;
+        }
+
+        .topnav .icon {
+            display: none;
+            float: right;
+            text-align: center;
+            padding: 12px 16px;
+            text-decoration: none;
+            font-size: 22px;
+            color: var(--lakers-gold);
+            background-color: var(--lakers-purple);
+            cursor: pointer;
+        }
+
+        .topnav a.icon:hover {
+            background-color: var(--lakers-purple);
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            flex: 1;
         }
 
         /* Page Header */
@@ -725,12 +810,20 @@
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav>
-        <div class="nav-container">
-            <button class="nav-button" onclick="window.location.href='contact.html'">Contact</button>
-            <button class="nav-button active">Account</button>
-        </div>
+        <!-- Navbar -->
+    <nav class="topnav" id="myTopnav">
+      <a href="index.html" class="logo">SkillSwap</a>
+      <div class="nav-links">
+        <a href="account.html" class = "active">Account</a>
+        <a href="members.html">Members</a>
+        <a href="contact.html">Contact Us</a>
+        <a href="signup.html">Sign Up</a>
+        <a href="signin.html">Sign In</a>
+      </div>
+      <button class="icon" onclick="toggleMenu()" aria-label="Menu">
+        <i class="fa fa-bars"></i>
+    </button>
+
     </nav>
 
     <!-- Page Header -->
@@ -747,13 +840,13 @@
         <div class="sidebar" id="sidebar">
             <div class="profile-card">
                 <div>
-                    <img id="profilePhoto" class="profile-photo" src="https://via.placeholder.com/150" alt="Profile Photo" />
+                    <img id="profilePhoto" class="profile-photo" src="images/mia.png" alt="Profile Photo" />
                     <input type="file" id="photoUpload" style="display:none" accept="image/*" />
                     <button class="upload-btn" onclick="document.getElementById('photoUpload').click()">Upload Photo</button>
                 </div>
                 <div>
-                    <div class="profile-name" id="profileName">Teny Makuach</div>
-                    <div class="profile-email" id="profileEmailDisplay">tenymakuach@gmail.com</div>
+                    <div class="profile-name" id="profileName">Mia Walker</div>
+                    <div class="profile-email" id="profileEmailDisplay">miawalker@yahoo.com</div>
                 </div>
             </div>
 
@@ -907,6 +1000,7 @@
             </div>
         </div>
     </div>
+    <div id="footer-container"></div>
 
     <script>
         let currentField = '';

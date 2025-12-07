@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="main.js" defer></script>
+    <link rel="stylesheet" href="style.css" />
     <title>Contact</title>
     <style>
       * {
@@ -46,8 +48,91 @@
         z-index: 0;
       }
 
+
+        /* NAVBAR STYLES */
+        .topnav {
+            background-color: var(--lakers-purple);
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 50px;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .topnav a {
+            float: left;
+            color: var(--lakers-gold);
+            text-align: center;
+            padding: 12px 16px;
+            text-decoration: none;
+            font-size: 22px;
+            font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+            transition: background-color 0.3s ease;
+        }
+
+        .topnav a:hover {
+            background-color: var(--lakers-purple);
+            color: white;
+        }
+
+        .topnav a.active {
+            background-color: var(--lakers-purple);
+            color: var(--lakers-gold);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--lakers-gold);
+            font-style: italic;
+        }
+
+        .logo:hover {
+            animation: bounce 0.6s ease;
+            color: white;
+            text-shadow: 0 0 15px var(--lakers-gold);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            25% { transform: translateY(-10px); }
+            50% { transform: translateY(-5px); }
+            75% { transform: translateY(-8px); }
+        }
+
+        .topnav .nav-links {
+            display: flex;
+            float: right;
+        }
+
+        .topnav .icon {
+            display: none;
+            float: right;
+            text-align: center;
+            padding: 12px 16px;
+            text-decoration: none;
+            font-size: 22px;
+            color: var(--lakers-gold);
+            background-color: var(--lakers-purple);
+            cursor: pointer;
+        }
+
+        .topnav a.icon:hover {
+            background-color: var(--lakers-purple);
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            flex: 1;
+        }
+
       /* Navigation Bar */
-      nav {
+      /* nav {
         background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
         padding: 0;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -83,7 +168,7 @@
       .nav-button.active {
         background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);
         color: white;
-      }
+      } */
 
       /* Page Header */
       .page-header {
@@ -317,17 +402,20 @@
     </style>
   </head>
   <body>
-    <!-- Navigation Bar -->
-    <nav>
-      <div class="nav-container">
-        <button class="nav-button active">Contact</button>
-        <button
-          class="nav-button"
-          onclick="window.location.href='account.html'"
-        >
-          Account
-        </button>
+    <!-- Navbar -->
+    <nav class="topnav" id="myTopnav">
+      <a href="index.html" class="logo">SkillSwap</a>
+      <div class="nav-links">
+        <a href="account.html">Account</a>
+        <a href="members.html">Members</a>
+        <a href="contact.html" class = "active">Contact Us</a>
+        <a href="signup.html">Sign Up</a>
+        <a href="signin.html">Sign In</a>
       </div>
+      <button class="icon" onclick="toggleMenu()" aria-label="Menu">
+        <i class="fa fa-bars"></i>
+    </button>
+
     </nav>
 
     <!-- Page Header -->
@@ -437,6 +525,7 @@
         </div>
       </div>
     </div>
+    <div id="footer-container"></div>
 
     <script>
       function handleSubmit(event) {
