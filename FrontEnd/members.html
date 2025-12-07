@@ -7,14 +7,132 @@
     <title>SkillSwap - Members</title>
     <link rel="stylesheet" href="style.css">
     <script src="main.js" defer></script>
+    <style>
+
+    /* MEMBER CARD GRID */
+    #members-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        width: 100%;
+        max-width: 1100px;
+        margin-top: 40px;
+        margin: 40px auto 0 auto;
+        margin-bottom: 40px;
+        justify-content: center;
+    }
+
+    /* MEMBER CARD STYLE */
+    .member-card {
+        background: var(--lakers-purple);
+        backdrop-filter: blur(10px);
+        border-radius: 18px;
+        padding: 25px;
+        box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+        border: 2px solid rgba(255, 255, 255, 0.35);
+
+        /* Subtle hover animation */
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        animation: cardFadeIn 0.6s ease;
+    }
+
+    .member-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 15px 45px rgba(0,0,0,0.35);
+    }
+
+    /* MEMBER NAME */
+    .member-card h2 {
+        font-size: 1.8em;
+        font-weight: bold;
+        margin-bottom: 12px;
+        color: var(--lakers-gold);
+        text-shadow: 0 0 6px rgba(0,0,0,0.15);
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+    }
+
+    /* CARD TEXT */
+    .member-card p {
+        margin-bottom: 10px;
+        font-size: 1.05em;
+        color: white;
+        line-height: 1.5;
+    }
+
+    /* CATEGORY TAGS */
+    .member-card p strong {
+        color: rgb(177, 156, 217);
+        font-weight: 700;
+    }
+
+    /* TAG LIST STYLE (comma-separated categories/wants) */
+    .member-tag-list {
+        display: inline-block;
+        padding: 6px 10px;
+        background: rgba(253,185,39,0.2);
+        color: var(--lakers-gold);
+        border-radius: 10px;
+        margin: 3px;
+        font-size: 0.9em;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    #search-btn {
+        margin-top: 10px;
+        padding: 10px 20px;
+        border-radius: 12px;
+        border: none;
+        background: gold;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    #search-btn:hover {
+        background: rgb(255, 224, 51);
+    }
+
+    /* Fade/slide animation */
+    @keyframes cardFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    </style>
 </head>
 <body>
+    <div id="header-container"></div>
     <h1>Meet Our Members</h1>
 
-    <div id="members-container">
+    <div id="filter-bar" style="text-align:center; margin-bottom: 25px;">
+        <input
+            type="text"
+            id="teach-filter"
+            placeholder="Filter by skill to teach..."
+            style="padding:10px; border-radius:10px; margin:5px; width:200px; border-color: var(--lakers-purple)"
+        >
 
-        
+        <input
+            type="text"
+            id="learn-filter"
+            placeholder="Filter by skill to learn..."
+            style="padding:10px; border-radius:10px; margin:5px; width:200px;"
+        >
+
+        <button
+            id="search-btn"
+        >
+            Search
+        </button>
     </div>
+
+
+    <div id="members-container"></div>
 
     <div id="footer-container"></div>
 
