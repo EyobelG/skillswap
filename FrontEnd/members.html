@@ -77,6 +77,20 @@
         box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
 
+    #search-btn {
+        margin-top: 10px;
+        padding: 10px 20px;
+        border-radius: 12px;
+        border: none;
+        background: gold;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    #search-btn:hover {
+        background: rgb(255, 224, 51);
+    }
+
     /* Fade/slide animation */
     @keyframes cardFadeIn {
         from {
@@ -94,6 +108,28 @@
 <body>
     <div id="header-container"></div>
     <h1>Meet Our Members</h1>
+
+    <div id="filter-bar" style="text-align:center; margin-bottom: 25px;">
+        <input
+            type="text"
+            id="teach-filter"
+            placeholder="Filter by skill to teach..."
+            style="padding:10px; border-radius:10px; margin:5px; width:200px; border-color: var(--lakers-purple)"
+        >
+
+        <input
+            type="text"
+            id="learn-filter"
+            placeholder="Filter by skill to learn..."
+            style="padding:10px; border-radius:10px; margin:5px; width:200px;"
+        >
+
+        <button
+            id="search-btn"
+        >
+            Search
+        </button>
+    </div>
 
 
     <div id="members-container"></div>

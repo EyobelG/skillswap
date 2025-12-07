@@ -22,6 +22,13 @@ body {
   all: unset;
 } */
 
+h1 {
+  text-align: center;
+  margin-top: 50px;
+  size: 50px;
+  color: var(--lakers-purple);
+}
+
 .topnav {
   background-color: var(--lakers-purple);
   overflow: hidden;
