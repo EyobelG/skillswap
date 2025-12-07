@@ -97,3 +97,27 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Intersection Observer for scroll animations
+// Each image appears ONLY when you scroll to it
+const observerOptions = {
+    threshold: 0.3, // Trigger when 30% of element is visible
+    rootMargin: '0px 0px -100px 0px' // Need to scroll more before triggering
+};
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        // Only animate when scrolling INTO view
+        if (entry.isIntersecting && !entry.target.classList.contains('visible')) {
+            entry.target.classList.add('visible');
+            
+            // Stop observing this element (one-time animation)
+            observer.unobserve(entry.target);
+        }
+    });
+}, observerOptions);
+
+// Observe all testimonial items
+document.querySelectorAll('.testimonial-item').forEach(item => {
+    observer.observe(item);
+});

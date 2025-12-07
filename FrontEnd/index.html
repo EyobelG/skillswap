@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Skill Swap - Learn Something, Teach Something</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="main.js" defer></script>
+    <link rel="stylesheet" href="style.css">
     <style>
         :root {
             --lakers-purple: #552583;
@@ -329,11 +331,13 @@
             text-align: center !important;
             z-index: 1000 !important;
             width: 100% !important;
+            background-color: #552583;
+            height: 100px;
         }
 
         /* Handshake overlay */
         .handshake-overlay {
-            position: fixed;
+            position: fixed !important;
             top: 0;
             left: 0;
             width: 100%;
@@ -690,6 +694,86 @@
             .topnav .icon {
                 display: block;
             }
+            #Testimonials {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 150px; /* Large vertical gap between testimonials */
+                padding: 40px 20px 200px 20px;
+            }
+
+            .testimonial-item {
+                opacity: 0;
+                max-width: 670px;
+                width: 100%;
+                transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+            }
+
+            .testimonial-item img {
+                width: 100%;
+                height: auto;
+                border-radius: 15px;
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            }
+
+            /* Slide from left */
+            .testimonial-item:nth-child(1) {
+                transform: translateX(-200px) rotate(-8deg) scale(0.8);
+            }
+
+            /* Slide from right */
+            .testimonial-item:nth-child(2) {
+                transform: translateX(200px) rotate(8deg) scale(0.8);
+            }
+
+            /* Slide from left */
+            .testimonial-item:nth-child(3) {
+                transform: translateX(-200px) rotate(-8deg) scale(0.8);
+            }
+
+            /* When visible */
+            .testimonial-item.visible {
+                opacity: 1;
+                transform: translateX(0) rotate(0deg) scale(1);
+            }
+
+            /* Add bounce effect on hover */
+            .testimonial-item.visible:hover {
+                transform: translateY(-15px) scale(1.03);
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            }
+
+            /* Add a subtle pulse effect when first appearing */
+            @keyframes popIn {
+                0% {
+                    transform: translateX(0) scale(0.95);
+                }
+                50% {
+                    transform: translateX(0) scale(1.05);
+                }
+                100% {
+                    transform: translateX(0) scale(1);
+                }
+            }
+
+            .testimonial-item.visible {
+                animation: popIn 0.5s ease-out;
+            }
+
+            @media (max-width: 768px) {
+                .testimonial-item {
+                    max-width: 100%;
+                }
+
+                #Testimonials {
+                    gap: 120px;
+                }
+
+                h2 {
+                    font-size: 24px;
+                    margin: 50px 0 40px 0;
+                }
+            }
         }
     </style>
 </head>
@@ -739,13 +823,18 @@
     </div>
     <br><br>
     <br><br>
-    <h2 style="text-align: center; color: white; font-size: 34px; font-family: Georgia, 'Times New Roman', Times, serif;">What Our Users Are Saying</h2>
-    <br><br>
-    <div id = "Testimonials">
-          <img src="images/akiko.png" width = "670"><br>
-          <img src="images/alex.png" width = "670"><br>
-          <img src="images/ava2.png" width = "670"><br>
-        
+      <h2>What Our Users Are Saying</h2>
+    
+    <div id="Testimonials">
+        <div class="testimonial-item" data-index="0">
+            <img src="images/akiko.png" alt="Akiko testimonial">
+        </div>
+        <div class="testimonial-item" data-index="1">
+            <img src="images/alex.png" alt="Alex testimonial">
+        </div>
+        <div class="testimonial-item" data-index="2">
+            <img src="images/ava3.png" alt="Ava testimonial">
+        </div>
     </div>
 
 
@@ -1169,6 +1258,5 @@
         // Run initialization function
         init();
     </script>
-    <script src="main.js" defer></script>
 </body>
 </html>
