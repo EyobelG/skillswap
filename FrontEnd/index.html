@@ -324,7 +324,7 @@
             font-weight: 500;
         }
 
-        #footer-container {
+        /* #footer-container {
             margin-top: auto !important;
             position: relative !important;
             bottom: 0 !important;
@@ -334,6 +334,50 @@
             width: 100% !important;
             background-color: #552583;
             height: 100px;
+        } */
+
+        /* Footer Styles */
+#footer-container {
+    margin-top: auto;
+    width: 100%;
+    background-color: var(--lakers-purple);
+    padding: 30px 0;
+}
+
+.site-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--lakers-purple);
+    color: var(--lakers-gold);
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center;
+            font-family: "Times New Roman", Times, serif;
+        }
+
+        .site-footer p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+            color: var(--lakers-gold);
+        }
+
+        .site-footer a {
+            color: var(--lakers-gold);
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 0 8px;
+            transition: color 0.3s ease;
+        }
+
+        .site-footer a:hover {
+            text-decoration: underline;
+            color: white;
+        }
+
+        .site-footer div {
+            margin-top: 10px;
         }
 
         /* Handshake overlay */
@@ -1209,11 +1253,21 @@
                 typingDiv.remove();
                 console.error('Error getting AI response:', error);
                 
-                // Show error message
-                const errorMessage = document.createElement('div');
-                errorMessage.className = 'message instructor';
-                errorMessage.innerHTML = `<div class="message-bubble">Sorry, I'm having trouble responding right now. Please try again!</div>`;
-                messagesContainer.appendChild(errorMessage);
+                // 1. Create the first error message
+                const errorMessage1 = document.createElement('div');
+                errorMessage1.className = 'message instructor';
+                errorMessage1.innerHTML = `<div class="message-bubble">Hello! I am away from my computer right now, please try again later!</div>`;
+                messagesContainer.appendChild(errorMessage1);
+                
+                // 2. Add a simple <br> tag for the new line effect
+                messagesContainer.appendChild(document.createElement('br')); 
+
+                // 3. Create the second error message
+                const errorMessage2 = document.createElement('div');
+                errorMessage2.className = 'message instructor';
+                errorMessage2.innerHTML = `<div class="message-bubble">I appreciate your patience.</div>`;
+                messagesContainer.appendChild(errorMessage2);
+                
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
         }
@@ -1270,6 +1324,38 @@
 
         // Run initialization function
         init();
+        // Load footer dynamically
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('footer-container').innerHTML = `
+                <footer class="site-footer">
+                    <p>&copy; 2025 SkillSwap. All rights reserved.</p>
+                    <div>
+                        <a href="contact.html">Contact Us</a> | 
+                        <a href="#">Privacy Policy</a> | 
+                        <a href="#">Terms of Service</a>
+                    </div>
+                </footer>
+            `;
+        });
+
+        // Scroll animation for testimonials - appears one by one as you scroll
+        const testimonialObserverOptions = {
+            threshold: 0.3,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const testimonialObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.classList.contains('visible')) {
+                    entry.target.classList.add('visible');
+                    testimonialObserver.unobserve(entry.target);
+                }
+            });
+        }, testimonialObserverOptions);
+
+        document.querySelectorAll('.testimonial-item').forEach(item => {
+            testimonialObserver.observe(item);
+        });
     </script>
 </body>
 </html>
