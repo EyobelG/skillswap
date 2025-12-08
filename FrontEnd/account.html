@@ -967,14 +967,30 @@
     <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
 
     <!-- EDIT MODAL -->
-    <div id="editModal" class="modal hidden">
+    <!-- <div id="editModal" class="modal hidden">
         <div class="modal-content">
             <button class="close-btn" onclick="closeEditModal()">×</button>
             <div class="modal-header" id="modalTitle"></div>
             <input id="modalInput" type="text" placeholder="Enter new value" />
             <button class="save-btn" onclick="saveEdit()">Save Changes</button>
         </div>
+    </div> -->
+
+    <div id="editModal" class="modal hidden"> 
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="modalTitle">Edit Field</h3> 
+            <span class="close-btn" onclick="closeEditModal()">×</span>
+        </div>
+        <div class="modal-body">
+            <input type="text" id="modalInput" class="text-input" placeholder="Enter new value"> 
+        </div>
+        <div class="modal-footer">
+            <button class="btn cancel-btn" onclick="closeEditModal()">Cancel</button>
+            <button class="btn save-btn" onclick="saveEdit()">Save Changes</button> 
+        </div>
     </div>
+</div>
 
     <!-- PAYMENT MODAL -->
     <div id="paymentModal" class="modal hidden">
@@ -1063,40 +1079,75 @@
         // Edit Modal Functions
         function openEditModal(field) {
             currentField = field;
-            document.getElementById('editModal').classList.remove('hidden');
+            const modal = document.getElementById('editModal');
+            const profileSection = document.getElementById('profileSection');
+            const mapCard = document.getElementById('locationMapCard'); // Reference to the map container
+
+            // --- CRITICAL EDIT: Handle Location separately ---
+            if (field === 'location') {
+                // 1. Hide the main profile section
+                profileSection.classList.add('hidden');
+                // 2. Show the map card
+                mapCard.classList.remove('hidden');
+                // 3. Force the map to resize/re-render if it was hidden
+                if (map) { // Assumes 'map' is globally defined and initialized
+                    setTimeout(() => { map.invalidateSize(); }, 50);
+                }
+                return; // Exit, as we don't open the standard modal
+            }
+            // --- END CRITICAL EDIT ---
 
             const titles = {
-                name: 'Edit Name',
+                name: 'Edit Full Name',
                 email: 'Edit Email',
                 phone: 'Edit Phone Number',
-                location: 'Edit Location',
+                location: 'Edit Location', // Only used for the title object, not the action
                 password: 'Change Password'
             };
 
             const currentValues = {
-                name: document.getElementById('nameValue').textContent,
-                email: document.getElementById('emailValue').textContent,
-                phone: document.getElementById('phoneValue').textContent,
-                location: document.getElementById('locationValue').textContent,
-                password: ''
+                name: document.getElementById('nameValue').textContent.trim(),
+                email: document.getElementById('emailValue').textContent.trim(),
+                phone: document.getElementById('phoneValue').textContent.trim(),
+                password: '' // Never pre-fill password
             };
 
             document.getElementById('modalTitle').textContent = titles[field];
-            document.getElementById('modalInput').value = currentValues[field];
+            document.getElementById('modalInput').value = currentValues[field] || '';
             
             if (field === 'password') {
                 document.getElementById('modalInput').type = 'password';
                 document.getElementById('modalInput').placeholder = 'Enter new password';
+            } else if (field === 'email') {
+                document.getElementById('modalInput').type = 'email';
+                document.getElementById('modalInput').placeholder = 'Enter new email';
             } else {
                 document.getElementById('modalInput').type = 'text';
                 document.getElementById('modalInput').placeholder = 'Enter new value';
             }
+
+            // Show the standard text modal for name, email, phone, and password
+            modal.classList.remove('hidden');
+
+            setTimeout(() => {
+                const modalInput = document.getElementById('modalInput');
+                if (modalInput) {
+                    modalInput.focus();
+                }
+            }, 100);
         }
 
         function closeEditModal() {
             document.getElementById('editModal').classList.add('hidden');
             currentField = '';
         }
+
+        // You also need this function for the map card's cancel button
+        function closeLocationEdit() {
+            document.getElementById('locationMapCard').classList.add('hidden');
+            document.getElementById('profileSection').classList.remove('hidden');
+        }
+
 
         function saveEdit() {
             const newValue = document.getElementById('modalInput').value.trim();
@@ -1106,6 +1157,7 @@
                 return;
             }
 
+            // 1. Update the display elements
             if (currentField === 'name') {
                 document.getElementById('nameValue').textContent = newValue;
                 document.getElementById('profileName').textContent = newValue;
@@ -1114,12 +1166,10 @@
                 document.getElementById('profileEmailDisplay').textContent = newValue;
             } else if (currentField === 'phone') {
                 document.getElementById('phoneValue').textContent = newValue;
-            } else if (currentField === 'location') {
-                document.getElementById('locationValue').textContent = newValue;
             } else if (currentField === 'password') {
                 alert('Password changed successfully!');
             }
-
+            
             closeEditModal();
         }
 
@@ -1379,15 +1429,6 @@ function showSection(section) {
             sidebar.classList.remove('active');
     }
 }
-
-// Dummy/Placeholder functions (required for HTML buttons to work)
-function openEditModal(field) {
-    currentField = field;
-    // Your modal logic here (e.g., displaying the modal)
-    console.log(`Opening edit modal for: ${field}`);
-}
-function saveEdit() { console.log('Saving edit...'); }
-function toggleMenu() { console.log('Toggling mobile menu...'); }
 
 // --- LEAFLET MAP FUNCTIONS ---
 /**
