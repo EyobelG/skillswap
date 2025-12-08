@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Contact</title>
-    <script src="header.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Contact - SkillSwap</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+      :root {
+        --lakers-purple: #552583;
+        --lakers-gold: #fdb927;
+      }
+
       * {
         margin: 0;
         padding: 0;
@@ -29,6 +29,8 @@
         min-height: 100vh;
         display: flex;
         flex-direction: column;
+        padding-top: 50px;
+        overflow-x: hidden;
       }
 
       body::before {
@@ -52,70 +54,86 @@
         z-index: 0;
       }
 
-      /* Navigation Bar */
-      nav {
-        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-        padding: 0;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        position: relative;
+      /* NAVBAR STYLES */
+      .topnav {
+        background-color: var(--lakers-purple);
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+        height: 50px;
+        top: 0;
+        left: 0;
         z-index: 10;
       }
 
-      .nav-container {
-        max-width: 1400px;
-        margin: 0 auto;
+      .topnav a {
+        float: left;
+        color: var(--lakers-gold);
+        text-align: center;
+        padding: 12px 16px;
+        text-decoration: none;
+        font-size: 22px;
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+        transition: background-color 0.3s ease;
+      }
+
+      .topnav a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+      }
+
+      .topnav a.active {
+        background-color: rgba(0, 0, 0, 0.2);
+        color: var(--lakers-gold);
+      }
+
+      .logo {
+        font-size: 28px;
+        font-weight: bold;
+        color: var(--lakers-gold);
+        font-style: italic;
+      }
+
+      .logo:hover {
+        animation: bounce 0.6s ease;
+        color: white;
+        text-shadow: 0 0 15px var(--lakers-gold);
+      }
+
+      @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        25% { transform: translateY(-10px); }
+        50% { transform: translateY(-5px); }
+        75% { transform: translateY(-8px); }
+      }
+
+      .topnav .nav-links {
         display: flex;
-        gap: 0;
-        padding: 0 2rem;
+        float: right;
       }
 
-      .nav-button {
-        padding: 1rem 2rem;
-        border: none;
+      .topnav .icon {
+        display: none;
+        float: right;
+        text-align: center;
+        padding: 12px 16px;
+        text-decoration: none;
+        font-size: 22px;
+        color: var(--lakers-gold);
         background-color: transparent;
-        color: rgba(255, 255, 255, 0.8);
-        font-size: 1.125rem;
-        font-weight: 600;
         cursor: pointer;
-        transition: all 0.3s ease;
-        position: relative;
+        border: none;
       }
 
-      .nav-button:hover {
+      .topnav .icon:hover {
+        background-color: rgba(255, 255, 255, 0.1);
         color: white;
-        background-color: rgba(255, 255, 255, 0.05);
-      }
-
-      .nav-button.active {
-        background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);
-        color: white;
-      }
-
-      /* Page Header */
-      .page-header {
-        background: linear-gradient(135deg, #6b21a8 0%, #5b21b6 100%);
-        padding: 2rem 0;
-        box-shadow: 0 8px 20px rgba(91, 33, 182, 0.3);
-        position: relative;
-        z-index: 5;
-      }
-
-      .page-header-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 2rem;
-      }
-
-      .page-title {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #fbbf24;
-        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
       }
 
       /* Main Content */
       .container {
         max-width: 1200px;
+        width: 100%;
         margin: 0 auto;
         padding: 3rem 2rem;
         position: relative;
@@ -217,7 +235,7 @@
 
       .info-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-columns: repeat(3, 1fr);
         gap: 2rem;
         margin-top: 2rem;
       }
@@ -266,19 +284,43 @@
         line-height: 1.6;
       }
 
+      /* Footer */
+      footer {
+        background-color: var(--lakers-purple);
+        color: var(--lakers-gold);
+        text-align: center;
+        padding: 2rem;
+        margin-top: auto;
+        position: relative;
+        z-index: 1;
+      }
+
+      footer p {
+        margin: 0;
+        font-size: 1rem;
+      }
+
       /* Responsive Design */
       @media (max-width: 768px) {
-        .nav-button {
-          padding: 0.75rem 1rem;
-          font-size: 1rem;
+        .topnav .nav-links {
+          display: none;
+          flex-direction: column;
+          width: 100%;
+          float: none;
         }
 
-        .page-header {
-          padding: 1.5rem 1rem;
+        .topnav.responsive .nav-links {
+          display: flex;
         }
 
-        .page-title {
-          font-size: 1.5rem;
+        .topnav.responsive a {
+          float: none;
+          display: block;
+          text-align: left;
+        }
+
+        .topnav .icon {
+          display: block;
         }
 
         .container {
@@ -299,15 +341,6 @@
       }
 
       @media (max-width: 480px) {
-        .nav-container {
-          padding: 0 0.5rem;
-        }
-
-        .nav-button {
-          padding: 0.75rem 0.75rem;
-          font-size: 0.9rem;
-        }
-
         .contact-wrapper {
           padding: 1.5rem 1rem;
         }
@@ -323,25 +356,20 @@
     </style>
   </head>
   <body>
-    <!-- Navigation Bar -->
-    <nav>
-      <div class="nav-container">
-        <button class="nav-button active">Contact</button>
-        <button
-          class="nav-button"
-          onclick="window.location.href='account.html'"
-        >
-          Account
-        </button>
+    <!-- Navbar -->
+    <nav class="topnav" id="myTopnav">
+      <a href="index.html" class="logo">SkillSwap</a>
+      <div class="nav-links">
+        <a href="account.html">Account</a>
+        <a href="members.html">Members</a>
+        <a href="contact.html" class="active">Contact Us</a>
+        <a href="signup.html">Sign Up</a>
+        <a href="signin.html">Sign In</a>
       </div>
+      <button class="icon" onclick="toggleMenu()" aria-label="Menu">
+        <i class="fa fa-bars"></i>
+      </button>
     </nav>
-
-    <!-- Page Header -->
-    <div class="page-header">
-      <div class="page-header-content">
-        <h1 class="page-title">Contact Us</h1>
-      </div>
-    </div>
 
     <!-- Main Content -->
     <div class="container">
@@ -413,7 +441,7 @@
                 </svg>
               </div>
               <div class="info-title">Email</div>
-              <div class="info-text">contact@example.com</div>
+              <div class="info-text">contact@skillswap.com</div>
             </div>
 
             <div class="info-card">
@@ -445,6 +473,12 @@
     </div>
 
     <script>
+      // Hamburger menu toggle function
+      function toggleMenu() {
+        var nav = document.getElementById("myTopnav");
+        nav.classList.toggle("responsive");
+      }
+      
       function handleSubmit(event) {
         event.preventDefault();
 

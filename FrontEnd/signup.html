@@ -8,6 +8,8 @@
     <script src="signup.js" defer></script>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Sign Up</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <style>
         :root {
             --bg: #f4f7fb;
@@ -27,7 +29,7 @@
             justify-content: space-between;
             margin: 0;
             font-family: Helvetica, Arial, sans-serif;
-            background: linear-gradient(180deg,var(--bg),#fff);
+            background: rgb(177, 156, 217);
         }
 
         html, body {
@@ -264,9 +266,9 @@
         <a href="signup.html" class="active">Sign Up</a>
         <a href="signin.html">Sign In</a>
       </div>
-      <a class="icon" onclick="toggleMenu()">
+    <button class="icon" onclick="toggleMenu()" aria-label="Menu">
         <i class="fa fa-bars"></i>
-      </a>
+    </button>
     </nav>
     
     
@@ -319,6 +321,112 @@
     </main>
 
     <div id="footer-container"></div>
+    <script>
+    // Hamburger menu toggle function
+   
 
+    window.onload = () => {
+        const form = document.getElementById("signup");
+        const fullName = document.getElementById("fullName");
+        const username = document.getElementById("username");
+        const email = document.getElementById("email");
+        const password = document.getElementById("password");
+        const error = document.getElementById("error");
+        const submitBtn = document.getElementById("submitBtn");
+
+        form.reset();
+        submitBtn.disabled = true;
+
+        function showError(message){
+            error.textContent = message;
+            error.style.display = message !== "" ? "block" : "none";
+        }
+
+        // Check if all fields are valid
+        function checkFormValidity() {
+            const fullNameValid = fullName.value.trim().length > 0;
+            const usernameValid = username.value.trim().length > 0;
+            const emailValid = email.validity.valid && email.value.trim().length > 0;
+            const passwordValid = password.value.length >= 8;
+
+            const allValid = fullNameValid && usernameValid && emailValid && passwordValid;
+            
+            submitBtn.disabled = !allValid;
+            
+            return allValid;
+        }
+
+        // Add input listeners to all fields
+        fullName.addEventListener("input", function() {
+            showError("");
+            checkFormValidity();
+        });
+
+        username.addEventListener("input", function() {
+            showError("");
+            checkFormValidity();
+        });
+
+        email.addEventListener("input", function() {
+            showError("");
+            checkFormValidity();
+        });
+
+        password.addEventListener("input", function() {
+            showError("");
+            checkFormValidity();
+        });
+
+        // Form submission
+        form.addEventListener("submit", function(e){
+            showError("");
+
+            // Final validation before submit
+            if (fullName.value.trim().length < 1) {
+                e.preventDefault();
+                showError("Please enter your name.");
+                fullName.focus();
+                return;
+            }
+            
+            if (username.value.trim().length < 1) {
+                e.preventDefault();
+                showError("Please enter a username.");
+                username.focus();
+                return;
+            }
+            
+            if (!email.validity.valid) {
+                e.preventDefault();
+                showError("Enter a valid email address.");
+                email.focus();
+                return;
+            }
+            
+            if (password.value.length < 8) {
+                e.preventDefault();
+                showError("Password must be at least 8 characters.");
+                password.focus();
+                return;
+            }
+
+            // If we get here, form is valid
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Creating…";
+            // open the page success.html after it has been created?
+            setTimeout(() => {
+                // Redirect the user to the success page
+                window.location.href = "success.html"; 
+            }, 500); 
+
+
+            
+        });
+    };
+    function toggleMenu() {
+        var nav = document.getElementById("myTopnav");
+        nav.classList.toggle("responsive");
+    }
+</script>
 </body>
 </html>
