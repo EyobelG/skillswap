@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="style.css" />
-    <script src="main.js" defer></script>
+    <script src="header.js" defer></script>
+    <script src="signin.js" defer></script>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
 
     <title>Sign In</title>
@@ -171,7 +172,6 @@
         }
 
     </style>
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="https://accounts.google.com/gsi/client" async></script>
     <meta name="google-signin-client_id" content="1087286650770-ctjshnie3q7rqf6njhuusruqkuo4udpe.apps.googleusercontent.com">
 </head>
@@ -207,7 +207,23 @@
 
                 <button id="submitBtn" type="submit" disabled>Sign in</button>
 
-                <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                <div id="g_id_onload"
+                    data-client_id="1087286650770-ctjshnie3q7rqf6njhuusruqkuo4udpe.apps.googleusercontent.com"
+                    data-context="signin"
+                    data-ux_mode="popup"
+                    data-callback="googlesignin"
+                    data-auto_prompt="false">
+                </div>
+
+                <div class="g_id_signin"
+                    data-type="standard"
+                    data-shape="rectangular"
+                    data-theme="outline"
+                    data-text="signin_with"
+                    data-size="large"
+                    data-logo_alignment="center"
+                    data-width="356">
+                </div>
                 
                 <div class="muted">Don't have an account? <a href="./signup.html" style="color:var(--accent);text-decoration:none">Sign up</a></div>
             </form>
@@ -215,75 +231,5 @@
     </main>
 
     <div id="footer-container"></div>
-
-    <script>
-        window.onload = () => {
-            const form = document.getElementById("signin");
-            const email = document.getElementById("email");
-            const password = document.getElementById("password");
-            const error = document.getElementById("error");
-            const submitBtn = document.getElementById("submitBtn");
-
-            form.reset();
-            submitBtn.disabled = true;
-
-            function showError(message){
-                error.textContent = message;
-                error.style.display = message !== "" ? "block" : "none";
-            }
-
-            let emailValid = false;
-            let passwordValid = false;
-
-            email.addEventListener("input", function(e) {
-                showError("");
-                if (email.value.length < 1){
-                    e.preventDefault();
-                    showError('Enter a username or email.');
-                    emailValid = false;
-                } else {
-                    emailValid = true;
-                }
-            });
-            
-            password.addEventListener("input", function(e) {
-                showError("");
-                if (password.value.length < 8){
-                    e.preventDefault();
-                    showError('Password must be at least 8 characters.');
-                    passwordValid = false;
-                } else {
-                    passwordValid = true;
-                }
-            });
-
-            form.addEventListener("input", function(e) {
-                if (emailValid && passwordValid) {
-                    submitBtn.disabled = false;
-                } else {
-                    submitBtn.disabled = true;
-                }
-            });
-
-            form.addEventListener("submit", function(e){
-                showError("");
-
-                if (!email.validity.valid) {
-                    e.preventDefault();
-                    showError("Enter a valid email address.");
-                    email.focus();
-                    return;
-                } else if (password.value.length < 8){
-                    e.preventDefault();
-                    showError("Password must be at least 8 characters.");
-                    password.focus();
-                    return;
-                }
-
-                submitBtn.disabled = true;
-                submitBtn.textContent = "Signing in…";
-            });
-        };
-    </script>
 </body>
 </html>
