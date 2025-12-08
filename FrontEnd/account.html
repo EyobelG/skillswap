@@ -1020,6 +1020,7 @@
     <div id="footer-container"></div>
 
     <script>
+    
         let currentField = '';
         let skills = [
             { id: 1, name: 'Tennis', level: 'Intermediate' },
@@ -1498,8 +1499,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial reverse geocode lookup to populate the field on load
     reverseGeocodeAndUpdateUI(currentCoords.lat, currentCoords.lng); 
 });
-
-
+        // Hamburger menu toggle function
+    function toggleMenu() {
+        var nav = document.getElementById("myTopnav");
+        nav.classList.toggle("responsive");
+    }
     </script>
 </body>
 </html>
