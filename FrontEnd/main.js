@@ -96,8 +96,7 @@ function renderMembers(members) {
 //CODE TO LOAD MEMBERS FROM DATABASE
 //RESPONSIVE NAVBAR CODE
 function toggleMenu() {
-    var nav = document.getElementById("myTopnav");
-    nav.classList.toggle("responsive");
+    document.getElementById("myTopnav").classList.toggle("responsive");
 }
 
 document.addEventListener('DOMContentLoaded', function() {
