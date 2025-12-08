@@ -1513,7 +1513,6 @@ function saveMapLocation() {
     alert(`✅ Location saved locally!\n${savedLocationText}\n(Lat: ${currentCoords.lat.toFixed(4)}, Lng: ${currentCoords.lng.toFixed(4)})`);
     console.log('Saved location:', locationData);
 }
-
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -1535,28 +1534,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     marker.on('dragend', onDragEnd);
 
-    // 3. Add Geocoder (Search Box)
+    // 3. Add Geocoder (Search Box) - CORRECTED
     const nominatimGeocoding = L.Control.Geocoder.nominatim();
     geocoder = nominatimGeocoding; 
     
-    L.Control.geocoder({
+    const geocoderControl = L.Control.geocoder({
         geocoder: nominatimGeocoding,
         position: 'topleft', 
-        placeholder: 'Search for your city or address...'
+        placeholder: 'Search for your city or address...',
+        defaultMarkGeocode: false  // Important: prevents default marker
     }).addTo(map);
     
-    // Listen for when the user selects a search result
-    geocoder.on('markgeocode', function(e) {
+    geocoderControl.on('markgeocode', function(e) {
         const center = e.geocode.center;
+        
+        // Update map view
         map.setView(center, 14);
+        
+        // Move existing marker to new position
         marker.setLatLng(center);
-        onDragEnd(); // This triggers the reverse geocoding update
+        
+        // Update stored coordinates
+        currentCoords.lat = center.lat;
+        currentCoords.lng = center.lng;
+        
+        // Update the address display
+        reverseGeocodeAndUpdateUI(currentCoords.lat, currentCoords.lng);
     });
 
     // Initial reverse geocode lookup to populate the field on load
     reverseGeocodeAndUpdateUI(currentCoords.lat, currentCoords.lng); 
 });
-        // Hamburger menu toggle function
+
+
+
+    // Hamburger menu toggle function
     function toggleMenu() {
         var nav = document.getElementById("myTopnav");
         nav.classList.toggle("responsive");
