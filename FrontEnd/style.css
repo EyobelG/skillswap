@@ -1,59 +1,77 @@
 /* WHOLE BODY STYLES */
 body {
     margin: 0;
-    /* Using a fixed background color */
-    background-color: #e0bbff; 
-    padding-top: 50px; /* Space for the fixed navbar */
-    cursor: default;
-    font-family: Helvetica, Arial, sans-serif; /* Consolidate font families */
+    background-color: #e0bbff;
+    padding-top: 50px;
 }
 /* WHOLE BODY STYLES */
-
-/* VARS: Fixed, only using relevant variables for clarity */
  :root {
-    --bg: #f4f7fb;
-    --lightgray: #e6e9ef;
-    --card: #ffffff;
-    --accent: #2563eb; /* Blue accent for hover */
-    --muted: #6b7280;
-    --lakers-purple: #552583;
-    --lakers-purple-light: #7c3aed;
-    --lakers-gold: #fdb927;
-    --gold: #fdb927;
+            --bg: #f4f7fb;
+            --lightgray: #e6e9ef;
+            --card: #ffffff;
+            --accent: #2563eb;
+            --muted: #6b7280;
+            --lakers-purple: #552583;
+            --lakers-purple-light: #7c3aed;
+            --lakers-gold: #fdb927;
+            --gold: #fdb927;
 }
 
-/*#region NAVBAR STYLES (Consolidated & Fixed) */
+h1 {
+  text-align: center;
+  margin-top: 50px;
+  size: 50px;
+  color: var(--lakers-purple);
+}
+/*#region NAVBAR STYLES */
+#header-container {
+  all: unset;
+}
 
-/* Base Navbar Container: Lakers Gold background, Fixed Position */
 .topnav {
-    overflow: hidden;
-    background-color: var(--lakers-gold); /* MAIN NAVBAR COLOR */
-    position: fixed; 
-    top: 0;
-    width: 100%;
-    /* Flex layout for logo on left, links on right */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px; /* Adjusted padding */
-    height: 50px; /* Fixed height for clean look */
-    z-index: 1000;
+  background-color: var(--lakers-purple);
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 50px;
+  top: 0;
+  z-index: 10;
 }
 
-/* Logo Styling */
-.topnav .logo {
-    color: var(--lakers-gold); /* Logo text is purple for contrast */
-    font-size: 28px;
-    font-weight: bold;
-    font-style: italic;
-    text-decoration: none;
-    transition: color 0.3s ease;
+.topnav a {
+  float: left;
+  color: var(--lakers-gold);
+  text-align: center;
+  padding: 12px 16px;
+  text-decoration: none;
+  font-size: 22px;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  transition: background-color 0.3s ease;
 }
+
+.topnav a:hover {
+  background-color: var(--lakers-purple);
+  color: var(--lakers-gold);
+}
+
+.topnav a.active {
+  background-color: var(--lakers-purple);
+  color: var(--lakers-gold);
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--gold);
+  font-style: italic;
+}
+
 .logo:hover {
   animation: bounce 0.6s ease;
   color: white;
-  text-shadow: 0 0 15px var(--lakers-purple); 
-} 
+  text-shadow: 0 0 15px var(--lakers-gold);
+}
+
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }
   25% { transform: translateY(-10px); }
@@ -61,123 +79,46 @@ body {
   75% { transform: translateY(-8px); }
 }
 
-
-/* Navigation Links Container (Desktop) */
 .topnav .nav-links {
-    display: flex; /* Links side by side */
-    align-items: center;
+  display: flex;
+  float: right;
 }
 
-/* Navigation Links Styling */
-.topnav .nav-links a {
-    color: var(--lakers-gold); /* Link text is purple */
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    font-size: 18px; /* Slightly larger text */
-    font-weight: 500;
-    display: inline-block;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Link Hover State (WORKING PERFECTLY) */
-.topnav .nav-links a:hover {
-    background-color: var(--lakers-purple); /* Dark background */
-    color: var(--lakers-gold); /* Gold text */
-}
-
-/* Active Link State */
-.topnav .nav-links a.active {
-    background-color: var(--lakers-purple); 
-    color: var(--lakers-gold); 
-    border-radius: 4px;
-}
-
-
-/* Hamburger Icon Button (Hidden on Desktop) */
 .topnav .icon {
-    display: none; /* Default hidden */
-    background: none;
-    border: none;
-    color: var(--lakers-purple); /* Icon color is purple */
-    font-size: 24px;
-    cursor: pointer;
-    padding: 10px;
-    transition: background-color 0.3s ease, color 0.3s ease;
+  display: none;
+  text-align: center;
+  padding: 12px 16px;
+  text-decoration: none;
+  font-size: 22px;
+  color: var(--lakers-gold);
 }
 
-/* Hamburger Icon Hover State */
-.topnav .icon:hover {
-    background-color: var(--lakers-purple); /* Purple background on hover */
-    color: var(--lakers-gold); /* Gold icon on hover */
-}
-
-
-/* ---------------------------------------------------- */
-/* --- Responsive (Mobile) Styles (WORKING PERFECTLY) --- */
-/* ---------------------------------------------------- */
-
-@media screen and (max-width: 768px) { /* Changed breakpoint to 768px for better mobile coverage */
-    
-    /* Show the icon and hide the links container */
-    .topnav .nav-links {
-        display: none; /* Hide links by default */
-    }
-
-    .topnav .icon {
-        display: block; /* Show the icon */
-        position: absolute; 
-        right: 10px;
-        top: 0; /* Align with the top edge */
-    }
-
-    /* Navbar when 'responsive' class is added (Dropdown Open) */
-    .topnav.responsive {
-        /* Remove flex layout on open to allow links to stack */
-        display: block; 
-        height: auto; /* Allow height to expand for dropdown */
-    }
-
-    /* Links container when menu is open */
-    .topnav.responsive .nav-links {
-        display: flex; /* Display the links */
-        flex-direction: column; /* Stack them vertically */
-        /* Set the dropdown color to Lakers Purple */
-        background-color: var(--lakers-purple); 
-        width: 100%;
-        position: static; /* Let links flow naturally below logo/icon */
-        padding-top: 50px; /* Push content down so links don't overlap icon */
-    }
-    
-    /* Links inside the open dropdown */
-    .topnav.responsive .nav-links a {
-        text-align: left;
-        padding: 10px 20px;
-        /* Links inside dropdown: Gold text on Purple background */
-        background-color: var(--lakers-purple); 
-        color: var(--lakers-gold);
-        border-bottom: 1px solid rgba(253, 185, 39, 0.2); /* Subtle separator */
-    }
-
-    /* Hover state for links inside the dropdown */
-    .topnav.responsive .nav-links a:hover {
-        background-color: var(--lakers-purple-light); /* Lighter purple on hover */
-        color: white;
-    }
+.topnav a.icon:hover {
+  background-color: var(--lakers-purple);
+  color: var(--lakers-gold);
 }
 /*#endregion NAVBAR STYLES */
 
-
-/* FOOTER STYLES */
-
-/* Site Footer - Ensure it uses variables for consistency */
+/* FOOTER STYLES (from midterm website) */
+#footer-container {
+  margin-top: auto;
+  position: relative;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  z-index: 1000;
+  width: 100%;
+  background-color: #552583;
+  height: 100px;
+}
+/* Site Footer - This is the actual footer content loaded from footer.html */
 .site-footer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: var(--lakers-purple); /* Purple background */
-  color: var(--lakers-gold); /* Gold text */
-  border-top: 3px solid var(--lakers-purple);
+  background-color: #552583;
+  color: #fdb927;
+  border-top: 3px solid #552583;
   width: 100%;
   padding: 20px 0;
   box-sizing: border-box;
@@ -185,19 +126,57 @@ body {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
   position: relative;
   bottom: 0;
-  margin-top: auto; /* Ensure footer stays at the bottom */
+}
+
+.site-footer p {
+  margin: 0 0 10px 0;
+  font-size: 0.9rem;
+  padding: 0 5px;
+  justify-content: center !important;
+  text-align: center !important;
 }
 
 .site-footer a {
-  color: var(--lakers-gold);
+  color: #fdb927;
   text-decoration: none;
   font-size: 0.9rem;
   padding: 0 5px;
 }
 
-/* Ensure the rest of your main, card, and other styles are kept consistent */
-/* Example: */
-main {
-    /* ... ensure padding-top is enough for the fixed navbar height */
-    padding-top: 60px; 
+.site-footer a:hover {
+  text-decoration: underline;
+}
+
+/*#endregion */
+/* FOOTER STYLES (from midterm website) */
+
+/* MEMBERS STYLES */
+/* #members-container {
+    width: 80%;
+    margin: 40px auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.member-card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 250px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+} */
+/* MEMBERS STYLES */
+
+/* Hero Section */
+#hero {
+  background-image: url("images/banner.png");
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
 }

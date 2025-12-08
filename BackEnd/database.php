@@ -1,9 +1,9 @@
 <?php
 // 1. Connect to MySQL
 $servername = "localhost";
-$username = "utnq9qzvkroxc";       // your XAMPP / MAMP username
-$password = "cs20finalproj";           // your DB password
-$dbname = "dbfxsgcb4otskb";  // your database name
+$username = "utnq9qzvkroxc";       
+$password = "cs20finalproj";          
+$dbname = "dbfxsgcb4otskb"; 
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
