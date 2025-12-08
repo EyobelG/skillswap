@@ -195,39 +195,57 @@ h1 {
   }
   
   /* Small screen behavior */
-  @media screen and (max-width: 768px) {
-  
-    /* Hide normal links */
-    .topnav .nav-links {
-      display: none;
-      flex-direction: column;
-      width: 100%;
-      background-color: var(--lakers-purple);
-      position: absolute;
-      top: 50px;  /* below navbar */
-      left: 0;
-    }
-  
+/* ✅ WORKING MOBILE NAVBAR (DROP-IN VERSION) */
+@media screen and (max-width: 950px) {
+
     /* Show hamburger */
     .topnav .icon {
-      display: block;
       float: right;
-      background: none;
+      display: block;
+      cursor: pointer;
+      background: transparent;
       border: none;
-      font-size: 24px;
-      color: var(--lakers-gold);
     }
   
-    /* Show menu when active */
+    /* Hide nav by default */
+    .topnav .nav-links {
+      display: none;
+    }
+  
+    /* When user clicks hamburger */
+    .topnav.responsive {
+      height: auto;
+    }
+  
+    /* Dropdown menu */
     .topnav.responsive .nav-links {
       display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      background-color: var(--lakers-purple);
+      position: fixed;
+      top: 50px;
+      left: 0;
+      z-index: 9999;
     }
   
-    .topnav.responsive a {
-      float: none;
-      text-align: left;
-      padding: 15px;
+    /* Style only nav links, not logo */
+    .topnav.responsive .nav-links a {
       width: 100%;
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid rgba(253, 185, 39, 0.2);
+      background-color: var(--lakers-purple);
+    }
+  
+    .topnav.responsive .nav-links a:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .topnav.responsive .nav-links a.active {
+        background-color: rgba(0, 0, 0, 0.2);
+        color: var(--lakers-gold);
     }
   }
   

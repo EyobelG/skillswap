@@ -99,7 +99,3 @@ window.onload = () => {
         submitBtn.textContent = "Creating…";
     });
 };
-
-function googlesignup() {
-    console.log("google sign up detected");
-}

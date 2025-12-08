@@ -3,13 +3,11 @@
 <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="style.css" />
+    <script src="main.js" defer></script>
     <script src="header.js" defer></script>
-    <script src="signin.js" defer></script>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <link rel="stylesheet" href="style.css" />
 
     <title>Sign In</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         :root {
             --bg: #f4f7fb;
@@ -44,7 +42,7 @@
             flex-direction: column;
             align-items: center;
             padding: 20px;
-            padding-top: 90px;
+            padding-top: 90px; /* Add space for fixed navbar */
             padding-bottom: 0;
             overflow-x: hidden;
         }
@@ -174,8 +172,6 @@
         }
 
     </style>
-    <script src="https://accounts.google.com/gsi/client" async></script>
-    <meta name="google-signin-client_id" content="1087286650770-ctjshnie3q7rqf6njhuusruqkuo4udpe.apps.googleusercontent.com">
 </head>
 <body>
     <!-- Navbar -->
@@ -188,9 +184,9 @@
         <a href="signup.html">Sign Up</a>
         <a href="signin.html" class="active">Sign In</a>
       </div>
-     <button class="icon" onclick="toggleMenu()" aria-label="Menu">
+      <a class="icon" onclick="toggleMenu()">
         <i class="fa fa-bars"></i>
-    </button>
+      </a>
     </nav>
 
     <main>
@@ -208,24 +204,6 @@
                 <div id="error" class="error" role="alert" aria-live="assertive"></div>
 
                 <button id="submitBtn" type="submit" disabled>Sign in</button>
-
-                <div id="g_id_onload"
-                    data-client_id="1087286650770-ctjshnie3q7rqf6njhuusruqkuo4udpe.apps.googleusercontent.com"
-                    data-context="signin"
-                    data-ux_mode="popup"
-                    data-callback="googlesignin"
-                    data-auto_prompt="false">
-                </div>
-
-                <div class="g_id_signin"
-                    data-type="standard"
-                    data-shape="rectangular"
-                    data-theme="outline"
-                    data-text="signin_with"
-                    data-size="large"
-                    data-logo_alignment="center"
-                    data-width="356">
-                </div>
                 
                 <div class="muted">Don't have an account? <a href="./signup.html" style="color:var(--accent);text-decoration:none">Sign up</a></div>
             </form>
@@ -301,21 +279,13 @@
             submitBtn.disabled = true;
             submitBtn.textContent = "Signing in…";
         });
-
-        document.getElementById('footer-container').innerHTML = `
-            <footer class="site-footer">
-                <p>&copy; 2025 SkillSwap. All rights reserved.</p>
-                <div>
-                    <a href="contact.html">Contact Us</a>
-                </div>
-            </footer>
-        `;
-    
+        
+        // Hamburger menu toggle function
+        window.toggleMenu = function() {
+            var nav = document.getElementById("myTopnav");
+            nav.classList.toggle("responsive");
+        };
     };
-    function toggleMenu() {
-        var nav = document.getElementById("myTopnav");
-        nav.classList.toggle("responsive");
-    }
     </script>
 </body>
 </html>
