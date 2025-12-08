@@ -1354,7 +1354,7 @@
         // --- LEAFLET CONFIG ---
 let map;
 let marker;
-let geocoder; 
+let geocoder = L.Control.Geocoder.nominatim(); // Initialize here
 // Initial coordinates (Cambridge, MA)
 let currentCoords = { lat: 42.3736, lng: -71.1097 }; 
 // Stores the human-readable address fetched via reverse geocoding
@@ -1390,35 +1390,63 @@ function saveEdit() { console.log('Saving edit...'); }
 function toggleMenu() { console.log('Toggling mobile menu...'); }
 
 // --- LEAFLET MAP FUNCTIONS ---
-
 /**
  * Converts coordinates to a human-readable address using reverse geocoding
  * and updates the UI (locationValue element) and the global savedLocationText.
  */
-function reverseGeocodeAndUpdateUI(lat, lng) {
-    if (!geocoder) return;
-
-    const latLng = L.latLng(lat, lng);
+async function reverseGeocodeAndUpdateUI(lat, lng) {
     const locationValueElement = document.getElementById('locationValue');
     
     // Set a temporary message while waiting for the API response
     locationValueElement.textContent = '... Resolving Address ...';
 
-    // Use the reverse() method of the Nominatim geocoder
-    geocoder.reverse(latLng, map.options.crs.scale(map.getZoom()), (results) => {
-        let addressToDisplay = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`; // Default fallback
-
-        if (results.length > 0) {
-            // Use the first (best) result's address string
-            addressToDisplay = results[0].name;
-        } 
+    try {
+        // Call Nominatim reverse geocoding API directly
+        const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
+        );
+        
+        if (!response.ok) {
+            throw new Error('Geocoding failed');
+        }
+        
+        const data = await response.json();
+        
+        let addressToDisplay = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`; // Fallback
+        
+        if (data && data.display_name) {
+            addressToDisplay = data.display_name;
+            
+            // Or create a shorter version from address components
+            if (data.address) {
+                const addr = data.address;
+                const parts = [
+                    addr.city || addr.town || addr.village,
+                    addr.state,
+                    addr.country
+                ].filter(Boolean);
+                
+                if (parts.length > 0) {
+                    addressToDisplay = parts.join(', ');
+                }
+            }
+        }
         
         // Update the visible text in the main profile section immediately
         locationValueElement.textContent = addressToDisplay;
         
         // Store the current address globally for when the SAVE button is clicked
-        savedLocationText = addressToDisplay; 
-    });
+        savedLocationText = addressToDisplay;
+        
+        console.log('Address resolved:', addressToDisplay);
+        console.log('Full data:', data);
+        
+    } catch (error) {
+        console.error('Reverse geocoding error:', error);
+        const fallbackAddress = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
+        locationValueElement.textContent = fallbackAddress;
+        savedLocationText = fallbackAddress;
+    }
 }
 
 // Function to update coordinates after drag or geocoding
