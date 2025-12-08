@@ -1234,7 +1234,7 @@
         messagesContainer.appendChild(userMessage);
 
         // Add user message to history (role: user)
-        chatModal.conversationHistory.push({ role: "user", parts: [{ text: message }] }); // <-- ADD USER HISTORY
+        chatModal.conversationHistory.push({ role: "user", parts: [{ text: message }] }); 
         
         // Clear input
         input.value = '';
@@ -1270,7 +1270,7 @@
             messagesContainer.appendChild(instructorMessage);
 
             // Add AI message to history (role: model)
-            chatModal.conversationHistory.push({ role: "model", parts: [{ text: response }] }); // <-- ADD AI HISTORY
+            chatModal.conversationHistory.push({ role: "model", parts: [{ text: response }] });
             
             // Scroll to bottom
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -1293,8 +1293,6 @@
             
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
             
-            // IMPORTANT: If the AI response failed, we must remove the last user message from history
-            // so the next message doesn't repeat the question after a failed attempt.
             chatModal.conversationHistory.pop(); 
         }
     }

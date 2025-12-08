@@ -1439,23 +1439,80 @@ function onDragEnd() {
  * Saves the globally stored address and coordinates, finalizing the change
  * in the profile display.
  */
-function saveMapLocation() {
+async function saveMapLocation() {
     if (!savedLocationText || savedLocationText.includes('Resolving')) {
         alert('Please wait for the location address to finish resolving before saving.');
         return;
     }
     
     // 1. Update the display in the profile section permanently
-    // This confirms to the user that the location they saw is the one that was saved
     document.getElementById('locationValue').textContent = savedLocationText;
     
-    // 2. Alert/Confirmation for the user
-    alert(`Location successfully saved to: ${savedLocationText} (Lat: ${currentCoords.lat.toFixed(4)}, Lng: ${currentCoords.lng.toFixed(4)})`);
+    // 2. Prepare data to send to server
+    const locationData = {
+        address: savedLocationText,
+        latitude: currentCoords.lat,
+        longitude: currentCoords.lng,
+        userId: 'miawalker@yahoo.com' // Replace with actual user ID from session/auth
+    };
     
-    // 3. 🚨 REAL WORLD: Send AJAX request to server here
-    // This is where you would send currentCoords.lat, currentCoords.lng, and savedLocationText
+    try {
+        // 3. Send AJAX request to server
+        const response = await fetch('https://joonh.sgedu.site/skillswap/backend/save-location.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(locationData)
+        });
+        
+        // Check if request was successful
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        
+        // 4. Handle server response
+        if (result.success) {
+            alert(`✅ Location successfully saved!\n${savedLocationText}\n(Lat: ${currentCoords.lat.toFixed(4)}, Lng: ${currentCoords.lng.toFixed(4)})`);
+            console.log('Location saved successfully:', result);
+        } else {
+            alert(`❌ Failed to save location: ${result.message || 'Unknown error'}`);
+            console.error('Save failed:', result);
+        }
+        
+    } catch (error) {
+        console.error('Error saving location:', error);
+        alert(`❌ Error saving location: ${error.message}\n\nLocation is saved locally but not synced to server.`);
+        
+        // Still save locally even if server fails
+        console.log('Location saved locally:', locationData);
+    }
 }
 
+// Add this version for local testing (no server needed)
+function saveMapLocation() {
+    if (!savedLocationText || savedLocationText.includes('Resolving')) {
+        alert('Please wait for the location address to finish resolving before saving.');
+        return;
+    }
+    
+    document.getElementById('locationValue').textContent = savedLocationText;
+    
+    // Save to localStorage for local testing
+    const locationData = {
+        address: savedLocationText,
+        latitude: currentCoords.lat,
+        longitude: currentCoords.lng,
+        timestamp: new Date().toISOString()
+    };
+    
+    localStorage.setItem('userLocation', JSON.stringify(locationData));
+    
+    alert(`✅ Location saved locally!\n${savedLocationText}\n(Lat: ${currentCoords.lat.toFixed(4)}, Lng: ${currentCoords.lng.toFixed(4)})`);
+    console.log('Saved location:', locationData);
+}
 
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
