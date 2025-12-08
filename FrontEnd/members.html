@@ -1,249 +1,148 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SkillSwap - Members</title>
     <link rel="stylesheet" href="style.css">
+    <script src="main.js" defer></script>
+    <script src="header.js" defer></script>
     <style>
-        /* STICKY FOOTER CSS INTEGRATION */
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-        #page-container {
-            min-height: 100vh;
-            display: grid;
-            grid-template-rows: auto 1fr auto; /* Header, Content (fills space), Footer */
-        }
-        header {
-            grid-row: 1;
-        }
-        main#content-wrap {
-            grid-row: 2;
-        }
-        #footer-container {
-            grid-row: 3;
-        }
-        /* END STICKY FOOTER CSS */
 
-        /* MEMBER CARD GRID */
-        #members-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            width: 100%;
-            max-width: 1100px;
-            margin-top: 40px;
-            margin: 40px auto 0 auto;
-            margin-bottom: 40px;
-            justify-content: center;
-        }
+    /* MEMBER CARD GRID */
+    #members-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        width: 100%;
+        max-width: 1100px;
+        margin-top: 40px;
+        margin: 40px auto 0 auto;
+        margin-bottom: 40px;
+        justify-content: center;
+    }
 
-        /* MEMBER CARD STYLE */
-        .member-card {
-            background: var(--lakers-purple);
-            backdrop-filter: blur(10px);
-            border-radius: 18px;
-            padding: 25px;
-            box-shadow: 0 10px 35px rgba(0,0,0,0.25);
-            border: 2px solid rgba(255, 255, 255, 0.35);
+    /* MEMBER CARD STYLE */
+    .member-card {
+        background: var(--lakers-purple);
+        backdrop-filter: blur(10px);
+        border-radius: 18px;
+        padding: 25px;
+        box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+        border: 2px solid rgba(255, 255, 255, 0.35);
 
-            /* Subtle hover animation */
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-            animation: cardFadeIn 0.6s ease;
-        }
+        /* Subtle hover animation */
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        animation: cardFadeIn 0.6s ease;
+    }
 
-        .member-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 15px 45px rgba(0,0,0,0.35);
-        }
+    .member-card:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 15px 45px rgba(0,0,0,0.35);
+    }
 
-        /* MEMBER NAME */
-        .member-card h2 {
-            font-size: 1.8em;
-            font-weight: bold;
-            margin-bottom: 12px;
-            color: var(--lakers-gold);
-            text-shadow: 0 0 6px rgba(0,0,0,0.15);
-            font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
-        }
+    /* MEMBER NAME */
+    .member-card h2 {
+        font-size: 1.8em;
+        font-weight: bold;
+        margin-bottom: 12px;
+        color: var(--lakers-gold);
+        text-shadow: 0 0 6px rgba(0,0,0,0.15);
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+    }
 
-        /* CARD TEXT */
-        .member-card p {
-            margin-bottom: 10px;
-            font-size: 1.05em;
-            color: white;
-            line-height: 1.5;
-        }
+    /* CARD TEXT */
+    .member-card p {
+        margin-bottom: 10px;
+        font-size: 1.05em;
+        color: white;
+        line-height: 1.5;
+    }
 
-        /* CATEGORY TAGS */
-        .member-card p strong {
-            color: rgb(177, 156, 217);
-            font-weight: 700;
-        }
+    /* CATEGORY TAGS */
+    .member-card p strong {
+        color: rgb(177, 156, 217);
+        font-weight: 700;
+    }
 
-        /* TAG LIST STYLE (comma-separated categories/wants) */
-        .member-tag-list {
-            display: inline-block;
-            padding: 6px 10px;
-            background: rgba(253,185,39,0.2);
-            color: var(--lakers-gold);
-            border-radius: 10px;
-            margin: 3px;
-            font-size: 0.9em;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-        }
+    /* TAG LIST STYLE (comma-separated categories/wants) */
+    .member-tag-list {
+        display: inline-block;
+        padding: 6px 10px;
+        background: rgba(253,185,39,0.2);
+        color: var(--lakers-gold);
+        border-radius: 10px;
+        margin: 3px;
+        font-size: 0.9em;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
 
-        #search-btn {
-            margin-top: 10px;
-            padding: 10px 20px;
-            border-radius: 12px;
-            border: none;
-            background: gold;
-            font-weight: bold;
-            cursor: pointer;
-        }
+    #search-btn {
+        margin-top: 10px;
+        padding: 10px 20px;
+        border-radius: 12px;
+        border: none;
+        background: gold;
+        font-weight: bold;
+        cursor: pointer;
+    }
 
-        #search-btn:hover {
-            background: rgb(255, 224, 51);
+    #search-btn:hover {
+        background: rgb(255, 224, 51);
+    }
+
+    /* Fade/slide animation */
+    @keyframes cardFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
         }
-       
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    </style>
+</head>
+<body>
+    <div id="header-container"></div>
+    <h1>Meet Our Members</h1>
+
+    <div id="filter-bar" style="text-align:center; margin-bottom: 25px;">
+        <input
+            type="text"
+            id="teach-filter"
+            placeholder="Filter by skill to teach..."
+            style="padding:10px; border-radius:10px; margin:5px; width:200px; border-color: var(--lakers-purple)"
+        >
+
+        <input
+            type="text"
+            id="learn-filter"
+            placeholder="Filter by skill to learn..."
+            style="padding:10px; border-radius:10px; margin:5px; width:200px;"
+        >
+
+        <button
+            id="search-btn"
+        >
+            Search
+        </button>
+    </div>
+
+
+    <div id="members-container"></div>
+
+    <div id="footer-container"></div>
+
+
+    <style>
         h1 {
             text-align: center;
             margin-top: 50px;
         }
     </style>
-</head>
-<body>
-    <div id="page-container">
-        <header>
-            <nav class="topnav" id="myTopnav">
-                <a href="index.html" class="logo">SkillSwap</a>
-                <div class="nav-links">
-                    <a href="account.html">Account</a>
-                    <a href="members.html" class = "active">Members</a>
-                    <a href="contact.html">Contact Us</a>
-                    <a href="signup.html">Sign Up</a>
-                    <a href="signin.html">Sign In</a>
-                </div>
-                <button class="icon" onclick="toggleMenu()" aria-label="Menu">
-                    <i class="fa fa-bars"></i>
-                </button>
-            </nav>
-        </header>
-
-        <main id="content-wrap">
-            <br><br>
-            <h1>Meet Our Members</h1>
-
-            <div id="filter-bar" style="text-align:center; margin-bottom: 25px;">
-                <input
-                    type="text"
-                    id="teach-filter"
-                    placeholder="Filter by skill to teach..."
-                    style="padding:10px; border-radius:10px; margin:5px; width:200px;"
-                >
-                <input
-                    type="text"
-                    id="learn-filter"
-                    placeholder="Filter by skill to learn..."
-                    style="padding:10px; border-radius:10px; margin:5px; width:200px;"
-                >
-                <button id="search-btn">Search</button>
-            </div>
-
-            <div id="members-container"></div>
-            <div id="resultsCount" style="text-align: center; margin-bottom: 15px;"></div>
-        </main>
-
-        <div id="footer-container"></div>
-    </div>
-
-    <script>
-        // Hamburger menu toggle function
-        function toggleMenu() {
-            var nav = document.getElementById("myTopnav");
-            nav.classList.toggle("responsive");
-        }
-
-        // Member data (reduced for brevity, use your full list)
-        const members = [
-            {"name": "Geneviève DuPont", "user-id": "gen-dup", "age": 38, "description": "Experienced French tutor.", "categories": ["French", "Tutor"], "image": "images/genevieve.jpg"},
-            {"name": "Miguel Alvarez", "user-id": "mig-alv", "age": 29, "description": "Guitar teacher focusing on acoustic technique.", "categories": ["Music", "Guitar", "Tutor"], "image": "images/miguel.jpg"},
-            {"name": "Aisha Khan", "user-id": "aish-kha", "age": 30, "description": "Professional chef offering cooking classes.", "categories": ["Cooking", "Chef"], "image": "images/Aisha.jpg"},
-        ];
-
-        let selectedCategories = [];
-
-        // Filter and display functions
-        function getAllCategories() {
-            const categories = new Set();
-            members.forEach(member => member.categories.forEach(cat => categories.add(cat)));
-            return Array.from(categories).sort();
-        }
-
-        function filterMembers() {
-            const teachTerm = document.getElementById('teach-filter').value.toLowerCase();
-            const learnTerm = document.getElementById('learn-filter').value.toLowerCase();
-            
-            const filtered = members.filter(member => {
-                const matchesTeach = !teachTerm || member.categories.some(cat => cat.toLowerCase().includes(teachTerm));
-                const matchesLearn = !learnTerm || member.categories.some(cat => cat.toLowerCase().includes(learnTerm));
-                
-                return matchesTeach && matchesLearn;
-            });
-            
-            displayMembers(filtered);
-        }
-
-        function displayMembers(membersToDisplay) {
-            const container = document.getElementById('members-container');
-            const countElement = document.getElementById('resultsCount');
-            
-            container.innerHTML = '';
-            
-            if (membersToDisplay.length === 0) {
-                container.innerHTML = '<div class="no-results" style="text-align: center;">😔 No instructors found. Try adjusting your filters!</div>';
-                countElement.textContent = '';
-                return;
-            }
-            
-            countElement.textContent = `Found ${membersToDisplay.length} instructor${membersToDisplay.length !== 1 ? 's' : ''}`;
-            
-            membersToDisplay.forEach(member => {
-                const card = document.createElement('div');
-                card.className = 'member-card';
-                card.innerHTML = `
-                    <div class="member-name"><h2>${member.name}</h2></div>
-                    <div class="member-description"><p>${member.description}</p></div>
-                    <div class="member-categories">
-                        ${member.categories.map(cat => `<span class="member-tag-list">${cat}</span>`).join('')}
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            displayMembers(members);
-            
-            // Add search input listener
-            document.getElementById('search-btn').addEventListener('click', filterMembers);
-            document.getElementById('teach-filter').addEventListener('input', filterMembers);
-            document.getElementById('learn-filter').addEventListener('input', filterMembers);
-
-            document.getElementById('footer-container').innerHTML = `
-                <footer class="site-footer">
-                    <p>&copy; 2025 SkillSwap. All rights reserved.</p>
-                    <div>
-                        <a href="contact.html">Contact Us</a> 
-                    </div>
-                </footer>
-            `;
-        });
-    </script>
 </body>
 </html>
