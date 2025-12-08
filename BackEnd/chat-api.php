@@ -22,21 +22,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
-// Get POST data
+// Get POST data (UPDATED TO EXPECT 'history')
 $input = json_decode(file_get_contents('php://input'), true);
-$userMessage = $input['message'] ?? '';
+$history = $input['history'] ?? []; // <-- GET HISTORY
 $memberName = $input['memberName'] ?? 'Instructor';
 $memberAge = $input['memberAge'] ?? '40';
 $memberCategories = $input['memberCategories'] ?? 'programming';
 $memberDescription = $input['memberDescription'] ?? 'A highly experienced mentor who specializes in web development.';
 
-if (empty($userMessage)) {
+if (empty($history)) {
     http_response_code(400);
-    echo json_encode(['error' => 'Message is required']);
+    echo json_encode(['error' => 'Conversation history is required']);
     exit;
 }
 
-// Build the prompt
+// Build the system prompt
 $systemPrompt = "You are {$memberName}, a {$memberAge}-year-old {$memberCategories} instructor. {$memberDescription}
 
 Your personality and speaking style should match your profession:
@@ -49,9 +49,6 @@ Your personality and speaking style should match your profession:
 Remember: You are chatting with a potential student who wants to learn from you, 
 and potentially swap skills.";
 
-// Use the system instruction field for better model control (recommended practice)
-$promptContent = "User message: {$userMessage}\n\nRespond as {$memberName}:";
-
 // Define the model
 $modelName = 'gemini-2.5-flash';
 
@@ -59,7 +56,7 @@ $modelName = 'gemini-2.5-flash';
 $apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/{$modelName}:generateContent?key={$API_KEY}";
 
 $requestData = [
-    // Using systemInstruction is the recommended way to set the character/persona
+    // Using systemInstruction for character/persona guidance
     'config' => [
         'systemInstruction' => $systemPrompt,
         'temperature' => 0.9,
@@ -67,13 +64,8 @@ $requestData = [
         'topP' => 1,
         'maxOutputTokens' => 500
     ],
-    'contents' => [
-        [
-            'parts' => [
-                ['text' => $promptContent]
-            ]
-        ]
-    ]
+    // Pass the entire conversation history for context
+    'contents' => $history // <-- USE HISTORY ARRAY HERE
 ];
 
 // Make the API call using cURL
@@ -98,8 +90,10 @@ if ($curlError) {
 }
 
 if ($httpCode !== 200) {
+    // Attempt to decode the response for better debugging
+    $errorDetails = json_decode($response, true) ?? ['raw_response' => $response];
     http_response_code(500);
-    echo json_encode(['error' => 'API request failed', 'httpCode' => $httpCode, 'details' => $response]);
+    echo json_encode(['error' => 'API request failed', 'httpCode' => $httpCode, 'details' => $errorDetails]);
     exit;
 }
 

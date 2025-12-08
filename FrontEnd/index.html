@@ -1144,183 +1144,196 @@
             }, 2000);
         }
 
-        // Open chat modal
-        function openChatModal(member) {
-            const chatModal = document.createElement('div');
-            chatModal.className = 'chat-modal';
-            chatModal.innerHTML = `
-                <div class="chat-container">
-                    <div class="chat-header">
-                        <div class="chat-header-info">
-                            <img src="${member.image}" alt="${member.name}" class="chat-avatar" onerror="this.src='https://via.placeholder.com/50'">
-                            <div class="chat-user-info">
-                                <h3>${member.name}</h3>
-                                <p>${member.categories.join(', ')}</p>
-                            </div>
+        const API_ENDPOINT = 'https://joonh.sgedu.site/skillswap/backend/chat-api.php'; 
+
+    // Helper function to escape HTML
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, (m) => map[m]);
+    }
+
+    // Open chat modal
+    function openChatModal(member) {
+        // Remove any existing modal first
+        document.querySelectorAll('.chat-modal').forEach(modal => modal.remove());
+
+        const chatModal = document.createElement('div');
+        chatModal.className = 'chat-modal';
+        chatModal.innerHTML = `
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="chat-header-info">
+                        <img src="${member.image}" alt="${member.name}" class="chat-avatar" onerror="this.src='https://via.placeholder.com/50'">
+                        <div class="chat-user-info">
+                            <h3>${member.name}</h3>
+                            <p>${member.categories.join(', ')}</p>
                         </div>
-                        <button class="close-chat" onclick="this.closest('.chat-modal').remove()">×</button>
                     </div>
-                    <div class="chat-messages" id="chatMessages">
-                        <div class="chat-welcome">
-                            <h4>🤝 Start a conversation with ${member.name}!</h4>
-                            <p>Introduce yourself and let them know what you'd like to learn.</p>
-                        </div>
-                    </div>
-                    <div class="chat-input-container">
-                        <div class="chat-input-wrapper">
-                            <input type="text" class="chat-input" placeholder="Type your message here..." id="messageInput">
-                            <button class="send-btn" id="sendBtn">Send</button>
-                        </div>
+                    <button class="close-chat" onclick="this.closest('.chat-modal').remove()">×</button>
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-welcome">
+                        <h4>🤝 Start a conversation with ${member.name}!</h4>
+                        <p>Introduce yourself and let them know what you'd like to learn.</p>
                     </div>
                 </div>
-            `;
-            document.body.appendChild(chatModal);
-            
-            // Store current member for the chat
-            chatModal.currentMember = member;
-            
-            // Focus on input
-            setTimeout(() => {
-                document.getElementById('messageInput').focus();
-            }, 100);
-            
-            // Add event listeners
-            document.getElementById('sendBtn').addEventListener('click', () => sendMessage(chatModal));
-            document.getElementById('messageInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    sendMessage(chatModal);
-                }
-            });
-        }
-
-        // Send message function with AI response
-        async function sendMessage(chatModal) {
-            const input = document.getElementById('messageInput');
-            const message = input.value.trim();
-            
-            if (!message) return;
-            
-            const member = chatModal.currentMember;
-            const messagesContainer = document.getElementById('chatMessages');
-            
-            // Remove welcome message if it exists
-            const welcomeMsg = messagesContainer.querySelector('.chat-welcome');
-            if (welcomeMsg) {
-                welcomeMsg.remove();
+                <div class="chat-input-container">
+                    <div class="chat-input-wrapper">
+                        <input type="text" class="chat-input" placeholder="Type your message here..." id="messageInput">
+                        <button class="send-btn" id="sendBtn">Send</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(chatModal);
+        
+        // Store current member and initialize conversation history
+        chatModal.currentMember = member;
+        chatModal.conversationHistory = []; // <-- INITIALIZE HISTORY
+        
+        // Focus on input
+        setTimeout(() => {
+            document.getElementById('messageInput').focus();
+        }, 100);
+        
+        // Add event listeners
+        document.getElementById('sendBtn').addEventListener('click', () => sendMessage(chatModal));
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage(chatModal);
             }
+        });
+    }
+
+    // Send message function with AI response (UPDATED FOR HISTORY)
+    async function sendMessage(chatModal) {
+        const input = document.getElementById('messageInput');
+        const message = input.value.trim();
+        
+        if (!message) return;
+        
+        const member = chatModal.currentMember;
+        const messagesContainer = document.getElementById('chatMessages');
+        
+        // Remove welcome message if it exists
+        const welcomeMsg = messagesContainer.querySelector('.chat-welcome');
+        if (welcomeMsg) {
+            welcomeMsg.remove();
+        }
+        
+        // Add user message to UI
+        const userMessage = document.createElement('div');
+        userMessage.className = 'message user';
+        userMessage.innerHTML = `<div class="message-bubble">${escapeHtml(message)}</div>`;
+        messagesContainer.appendChild(userMessage);
+
+        // Add user message to history (role: user)
+        chatModal.conversationHistory.push({ role: "user", parts: [{ text: message }] }); // <-- ADD USER HISTORY
+        
+        // Clear input
+        input.value = '';
+        
+        // Scroll to bottom
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        // Show typing indicator
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'message instructor';
+        typingDiv.innerHTML = `
+            <div class="typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        `;
+        messagesContainer.appendChild(typingDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        // Get AI response
+        try {
+            // Pass the ENTIRE history to the backend
+            const response = await getAIResponse(chatModal.conversationHistory, member); 
             
-            // Add user message
-            const userMessage = document.createElement('div');
-            userMessage.className = 'message user';
-            userMessage.innerHTML = `<div class="message-bubble">${escapeHtml(message)}</div>`;
-            messagesContainer.appendChild(userMessage);
+            // Remove typing indicator
+            typingDiv.remove();
             
-            // Clear input
-            input.value = '';
+            // Add instructor message to UI
+            const instructorMessage = document.createElement('div');
+            instructorMessage.className = 'message instructor';
+            instructorMessage.innerHTML = `<div class="message-bubble">${escapeHtml(response)}</div>`;
+            messagesContainer.appendChild(instructorMessage);
+
+            // Add AI message to history (role: model)
+            chatModal.conversationHistory.push({ role: "model", parts: [{ text: response }] }); // <-- ADD AI HISTORY
             
             // Scroll to bottom
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        } catch (error) {
+            typingDiv.remove();
+            console.error('Error getting AI response:', error);
             
-            // Show typing indicator
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'message instructor';
-            typingDiv.innerHTML = `
-                <div class="typing-indicator">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            `;
-            messagesContainer.appendChild(typingDiv);
+            // Simple error handling messages
+            const errorMessage1 = document.createElement('div');
+            errorMessage1.className = 'message instructor';
+            errorMessage1.innerHTML = `<div class="message-bubble">Hello! I am away from my computer right now, please try again later!</div>`;
+            messagesContainer.appendChild(errorMessage1);
+            
+            messagesContainer.appendChild(document.createElement('br')); 
+
+            const errorMessage2 = document.createElement('div');
+            errorMessage2.className = 'message instructor';
+            errorMessage2.innerHTML = `<div class="message-bubble">I appreciate your patience.</div>`;
+            messagesContainer.appendChild(errorMessage2);
+            
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
             
-            // Get AI response
-            try {
-                const response = await getAIResponse(message, member);
-                
-                // Remove typing indicator
-                typingDiv.remove();
-                
-                // Add instructor message
-                const instructorMessage = document.createElement('div');
-                instructorMessage.className = 'message instructor';
-                instructorMessage.innerHTML = `<div class="message-bubble">${escapeHtml(response)}</div>`;
-                messagesContainer.appendChild(instructorMessage);
-                
-                // Scroll to bottom
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            } catch (error) {
-                typingDiv.remove();
-                console.error('Error getting AI response:', error);
-                
-                // 1. Create the first error message
-                const errorMessage1 = document.createElement('div');
-                errorMessage1.className = 'message instructor';
-                errorMessage1.innerHTML = `<div class="message-bubble">Hello! I am away from my computer right now, please try again later!</div>`;
-                messagesContainer.appendChild(errorMessage1);
-                
-                // 2. Add a simple <br> tag for the new line effect
-                messagesContainer.appendChild(document.createElement('br')); 
-
-                // 3. Create the second error message
-                const errorMessage2 = document.createElement('div');
-                errorMessage2.className = 'message instructor';
-                errorMessage2.innerHTML = `<div class="message-bubble">I appreciate your patience.</div>`;
-                messagesContainer.appendChild(errorMessage2);
-                
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }
+            // IMPORTANT: If the AI response failed, we must remove the last user message from history
+            // so the next message doesn't repeat the question after a failed attempt.
+            chatModal.conversationHistory.pop(); 
         }
-    
-        const API_ENDPOINT = 'https://joonh.sgedu.site/skillswap/backend/chat-api.php'; 
+    }
 
-        // Get AI response using your PHP backend
-        async function getAIResponse(userMessage, member) {
-            // Construct the payload matching what chat-api.php expects
-            const payload = {
-                message: userMessage,
-                memberName: member.name,
-                memberAge: member.age,
-                memberCategories: member.categories.join(', '),
-                memberDescription: member.description
-            };
+    // Get AI response using your PHP backend (UPDATED FOR HISTORY)
+    async function getAIResponse(history, member) {
+        // Construct the payload matching what chat-api.php expects
+        const payload = {
+            history: history, // <-- Send the entire history array
+            memberName: member.name,
+            memberAge: member.age,
+            memberCategories: member.categories.join(', '),
+            memberDescription: member.description
+        };
 
-            const response = await fetch(API_ENDPOINT, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
+        const response = await fetch(API_ENDPOINT, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        });
 
-            // Handle HTTP errors
-            if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ error: 'Unknown server error' }));
-                throw new Error(`API Request Failed (HTTP ${response.status}): ${errorData.error}`);
-            }
-
-            const data = await response.json();
-
-            // Handle errors returned in the JSON payload
-            if (data.error) {
-                throw new Error(`Backend Error: ${data.error} - ${data.details || ''}`);
-            }
-
-            // Return the AI's response text
-            return data.response;
+        // Handle HTTP errors
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`API Request Failed (HTTP ${response.status}): ${errorText}`);
         }
-        
-        // Simple function to sanitize user input before display
-        function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, (m) => map[m]);
+
+        const data = await response.json();
+
+        // Handle errors returned in the JSON payload
+        if (data.error) {
+            throw new Error(`Backend Error: ${data.error} - ${data.details || ''}`);
         }
+
+        // Return the AI's response text
+        return data.response;
+    }
 
         // Run initialization function
         init();
