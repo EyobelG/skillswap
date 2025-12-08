@@ -305,115 +305,104 @@
     </main>
 
     <div id="footer-container"></div>
-
     <script>
-        // Hamburger menu toggle function
-        function toggleMenu() {
-            var nav = document.getElementById("myTopnav");
-            nav.classList.toggle("responsive");
+    // Hamburger menu toggle function
+    function toggleMenu() {
+        var nav = document.getElementById("myTopnav");
+        nav.classList.toggle("responsive");
+    }
+
+    window.onload = () => {
+        const form = document.getElementById("signup");
+        const fullName = document.getElementById("fullName");
+        const username = document.getElementById("username");
+        const email = document.getElementById("email");
+        const password = document.getElementById("password");
+        const error = document.getElementById("error");
+        const submitBtn = document.getElementById("submitBtn");
+
+        form.reset();
+        submitBtn.disabled = true;
+
+        function showError(message){
+            error.textContent = message;
+            error.style.display = message !== "" ? "block" : "none";
         }
 
-        window.onload = () => {
-            const form = document.getElementById("signup");
-            const fullName = document.getElementById("fullName");
-            const username = document.getElementById("username");
-            const email = document.getElementById("email");
-            const password = document.getElementById("password");
-            const error = document.getElementById("error");
-            const submitBtn = document.getElementById("submitBtn");
+        // Check if all fields are valid
+        function checkFormValidity() {
+            const fullNameValid = fullName.value.trim().length > 0;
+            const usernameValid = username.value.trim().length > 0;
+            const emailValid = email.validity.valid && email.value.trim().length > 0;
+            const passwordValid = password.value.length >= 8;
 
-            form.reset();
-            submitBtn.disabled = true;
+            const allValid = fullNameValid && usernameValid && emailValid && passwordValid;
+            
+            submitBtn.disabled = !allValid;
+            
+            return allValid;
+        }
 
-            function showError(message){
-                error.textContent = message;
-                error.style.display = message !== "" ? "block" : "none";
+        // Add input listeners to all fields
+        fullName.addEventListener("input", function() {
+            showError("");
+            checkFormValidity();
+        });
+
+        username.addEventListener("input", function() {
+            showError("");
+            checkFormValidity();
+        });
+
+        email.addEventListener("input", function() {
+            showError("");
+            checkFormValidity();
+        });
+
+        password.addEventListener("input", function() {
+            showError("");
+            checkFormValidity();
+        });
+
+        // Form submission
+        form.addEventListener("submit", function(e){
+            showError("");
+
+            // Final validation before submit
+            if (fullName.value.trim().length < 1) {
+                e.preventDefault();
+                showError("Please enter your name.");
+                fullName.focus();
+                return;
+            }
+            
+            if (username.value.trim().length < 1) {
+                e.preventDefault();
+                showError("Please enter a username.");
+                username.focus();
+                return;
+            }
+            
+            if (!email.validity.valid) {
+                e.preventDefault();
+                showError("Enter a valid email address.");
+                email.focus();
+                return;
+            }
+            
+            if (password.value.length < 8) {
+                e.preventDefault();
+                showError("Password must be at least 8 characters.");
+                password.focus();
+                return;
             }
 
-            let fullNameValid = false;
-            let usernameValid = false;
-            let emailValid = false;
-            let passwordValid = false;
-
-            fullName.addEventListener("input", function(e) {
-                showError("");
-                if (fullName.value.length < 1) {
-                    e.preventDefault();
-                    showError("Please enter your name.");
-                    fullNameValid = false;
-                } else {
-                    fullNameValid = true;
-                }
-            });
-            username.addEventListener("input", function(e) {
-                showError("");
-                if (username.value.length < 1) {
-                    e.preventDefault();
-                    showError("Please enter a username.");
-                    usernameValid = false;
-                } else {
-                    usernameValid = true;
-                }
-            });
-            email.addEventListener("input", function(e) {
-                showError("");
-                if (email.classList.contains(":invalid")) {
-                    e.preventDefault();
-                    showError("Enter a valid email address.");
-                    emailValid = false;
-                } else {
-                    emailValid = true;
-                }
-            });
-            password.addEventListener("input", function(e) {
-                showError("");
-                if (password.value.length < 8){
-                    e.preventDefault();
-                    showError('Password must be at least 8 characters.');
-                    passwordValid = false;
-                } else {
-                    passwordValid = true;
-                }
-            });
-
-            form.addEventListener("input", function(e) {
-                if (fullNameValid && usernameValid && emailValid && passwordValid) {
-                    submitBtn.disabled = false;
-                } else {
-                    submitBtn.disabled = true;
-                }
-            });
-
-            form.addEventListener("submit", function(e){
-                showError("");
-
-                if (fullName.value.length < 1) {
-                    e.preventDefault();
-                    showError("Please enter your name.");
-                    fullName.focus();
-                    return;
-                } else if (username.value.length < 1) {
-                    e.preventDefault();
-                    showError("Please enter a username.");
-                    username.focus();
-                    return;
-                } else if (email.classList.contains(":invalid")) {
-                    e.preventDefault();
-                    showError("Enter a valid email address.");
-                    email.focus();
-                    return;
-                } else if (password.value.length < 8){
-                    e.preventDefault();
-                    showError("Password must be at least 8 characters.");
-                    password.focus();
-                    return;
-                }
-
-
-                submitBtn.disabled = true;
-                submitBtn.textContent = "Creating…";
-            });
-        };
-    </script>
+            // If we get here, form is valid
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Creating…";
+            
+        });
+    };
+</script>
 </body>
 </html>
