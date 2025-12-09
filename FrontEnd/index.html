@@ -1096,6 +1096,11 @@ const members = [
                     <div class="member-categories">
                         ${member.categories.map(cat => `<span class="category-tag">${cat}</span>`).join('')}
                     </div>
+                    <div class="star-rating" data-user-id="${member['user-id']}">
+                        ${[1, 2, 3, 4, 5].map(star => `
+                            <span class="star" data-value="${star}" onclick="rateUser(event, '${member['user-id']}', ${star})">&#9733;</span>
+                        `).join('')}
+                    </div>
                 `;
                 
                 container.appendChild(card);
