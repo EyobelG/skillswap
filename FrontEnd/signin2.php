@@ -1,15 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="style.css" />
-    <script src="main.js" defer></script>
-    <script src="header.js" defer></script>
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<?php
+    include 'header.php';
+?>
 
-    <title>Sign In</title>
-    <style>
+<style>
         :root {
             --bg: #f4f7fb;
             --lightgray: #e6e9ef;
@@ -173,22 +166,6 @@
         }
 
     </style>
-</head>
-<body>
-    <!-- Navbar -->
-    <nav class="topnav" id="myTopnav">
-      <a href="index.html" class="logo">SkillSwap</a>
-      <div class="nav-links">
-        <a href="account.html">Account</a>
-        <a href="members.html">Members</a>
-        <a href="contact.html">Contact Us</a>
-        <a href="signup.html">Sign Up</a>
-        <a href="signin.html" class="active">Sign In</a>
-      </div>
-      <a class="icon" onclick="toggleMenu()">
-        <i class="fa fa-bars"></i>
-      </a>
-    </nav>
 
     <main>
         <div class="card" aria-labelledby="signin-title">
@@ -212,6 +189,10 @@
     </main>
 
     <div id="footer-container"></div>
+
+<?php
+    include 'footer.php';
+?>
 
     <script>
         window.onload = () => {
@@ -288,5 +269,4 @@
         };
     };
     </script>
-</body>
-</html>
+

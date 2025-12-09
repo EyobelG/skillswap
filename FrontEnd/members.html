@@ -1,8 +1,17 @@
-<?php
-    include 'header.php';
-?>
-<style> 
-        /* MEMBER CARD GRID */
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSwap - Members</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="main.js" defer></script>
+    <script src="header.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+
+    /* MEMBER CARD GRID */
     #members-container {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -99,14 +108,32 @@
             transform: translateY(0);
         }
     }
-    .container {
-        max-width: 1200px;
-        width: 100%;
-        margin: 0 auto;
-        flex: 1;
-    }
-</style>
+    
 
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            flex: 1;
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="topnav" id="myTopnav">
+        <a href="index.html" class="logo">SkillSwap</a>
+        <div class="nav-links">
+          <a href="account.html">Account</a>
+          <a href="members.html" class = "active">Members</a>
+          <a href="contact.html">Contact Us</a>
+          <a href="signup.html">Sign Up</a>
+          <a href="signin.html">Sign In</a>
+        </div>
+        <button class="icon" onclick="toggleMenu()" aria-label="Menu">
+          <i class="fa fa-bars"></i>
+      </button>
+  
+    </nav>
     <h1>Meet Our Members</h1>
 
     <div id="filter-bar" style="text-align:center; margin-bottom: 25px;">
@@ -136,6 +163,19 @@
 
     <div id="footer-container"></div>
 
-<?php
-    include 'footer.php';
-?>
+
+    <style>
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+        }
+    </style>
+    <script>
+        // Hamburger menu toggle function
+        function toggleMenu() {
+            document.getElementById("myTopnav").classList.toggle("responsive");
+        }
+
+    </script>
+</body>
+</html>

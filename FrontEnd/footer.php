@@ -3,7 +3,6 @@
 ?>
 
     <script>
-        
         // Hamburger menu toggle function
         function toggleMenu() {
             var nav = document.getElementById("myTopnav");
