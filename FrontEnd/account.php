@@ -183,12 +183,17 @@
                         <h2 class='section-title'>Skills</h2>
                         <p class='section-description'>Manage your skills and expertise levels</p>
 
-                        <button class='add-method-btn' onclick='openSkillModal()'>Manage Skills</button>
+                        <button class='add-method-btn' onclick='openSkillModal()'>Manage Skills</button>";
 
-                        <div id='skillDisplay'>
-                            <p style='color: #e9d5ff; text-align: center; padding: 2rem;'>$categories</p>
-                        </div>
-                    </div>
+                    foreach ($categories as $category) {
+                        echo "<div class='field-card'>
+                                <div class='field-info'>
+                                    <div class='field-label'>$category</div>
+                                </div>
+                            </div>";
+                    }
+                        
+                    echo "</div>
 
                     <!-- SECURITY SECTION -->
                     <div id='securitySection' class='main-section'>
@@ -1262,23 +1267,23 @@
             `).join('');
         }
 
-        function displaySkills() {
-            const skillDisplay = document.getElementById('skillDisplay');
+        // function displaySkills() {
+        //     const skillDisplay = document.getElementById('skillDisplay');
             
-            if (skills.length === 0) {
-                skillDisplay.innerHTML = '<p style="color: #e9d5ff; text-align: center; padding: 2rem;">No skills added yet.</p>';
-                return;
-            }
+        //     if (skills.length === 0) {
+        //         skillDisplay.innerHTML = '<p style="color: #e9d5ff; text-align: center; padding: 2rem;">No skills added yet.</p>';
+        //         return;
+        //     }
 
-            skillDisplay.innerHTML = skills.map(skill => `
-                <div class="field-card">
-                    <div class="field-info">
-                        <div class="field-label">${skill.name}</div>
-                        <div class="field-value">${skill.level}</div>
-                    </div>
-                </div>
-            `).join('');
-        }
+        //     skillDisplay.innerHTML = skills.map(skill => `
+        //         <div class="field-card">
+        //             <div class="field-info">
+        //                 <div class="field-label">${skill.name}</div>
+        //                 <div class="field-value">${skill.level}</div>
+        //             </div>
+        //         </div>
+        //     `).join('');
+        // }
 
         function addSkill() {
             const name = document.getElementById('newSkillName').value.trim();
