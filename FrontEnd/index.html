@@ -22,6 +22,8 @@
 
         html, body {
             height: 100%;
+            margin: 0;
+            padding: 0;
         }
 
         body {
@@ -255,17 +257,24 @@
 
         /* Footer Styles */
 
-.site-footer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: var(--lakers-purple);
-    color: var(--lakers-gold);
-    width: 100%;
-    padding: 20px;
-    box-sizing: border-box;
-    text-align: center;
+        #footer-container {
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+            margin-right: calc(-50vw + 50%);
+        }
+
+        .site-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: var(--lakers-purple);
+            color: var(--lakers-gold);
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
             font-family: "Times New Roman", Times, serif;
+            margin-top: auto;
         }
 
         .site-footer p {
@@ -733,7 +742,6 @@
     <div class="container">
         <div class="hero">
         </div>
-        </div>
 
         <div class="search-container">
             <div class="search-box">
@@ -779,11 +787,9 @@
         </div>
     </div>
 
-
     <div id="footer-container"></div>
 
     <script>
-        
         // Hamburger menu toggle function
         function toggleMenu() {
             var nav = document.getElementById("myTopnav");
@@ -1222,6 +1228,16 @@
         // Run initialization function
         init();
         // Load footer dynamically
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('footer-container').innerHTML = `
+                <footer class="site-footer">
+                    <p>&copy; 2025 SkillSwap. All rights reserved.</p>
+                    <div>
+                        <a href="contact.html">Contact Us</a>
+                    </div>
+                </footer>
+            `;
+        });
 
         // Scroll animation for testimonials - appears one by one as you scroll
         const testimonialObserverOptions = {
