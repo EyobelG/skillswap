@@ -79,11 +79,8 @@ $requestData = [
             ]
         ]
     ],
-    'systemInstruction' => [
-        'parts' => [
-            ['text' => $systemPrompt]
-        ]
-    ],
+    'systemInstruction' => $systemPrompt,
+    
     'generationConfig' => [
         'temperature' => 0.9,
         'topK' => 40,
