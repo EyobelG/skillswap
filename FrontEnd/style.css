@@ -117,7 +117,7 @@ h1 {
   background-color: #552583;
   height: 100px;
 }
-/* Site Footer - This is the actual footer content loaded from footer.html */
+/* Site Footer */
 .site-footer {
   display: flex;
   flex-direction: column;
@@ -153,28 +153,6 @@ h1 {
   text-decoration: underline;
 }
 
-/*#endregion */
-/* FOOTER STYLES (from midterm website) */
-
-/* MEMBERS STYLES */
-/* #members-container {
-    width: 80%;
-    margin: 40px auto;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-}
-
-.member-card {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 250px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-} */
-/* MEMBERS STYLES */
-
 /* Hero Section */
 #hero {
   background-image: url("images/banner.png");
@@ -187,15 +165,12 @@ h1 {
   align-items: flex-end;
 }
 
-/* ✅ RESPONSIVE HAMBURGER MENU */
 
 /* Hide hamburger on large screens */
 .icon {
     display: none;
   }
   
-  /* Small screen behavior */
-/* ✅ WORKING MOBILE NAVBAR (DROP-IN VERSION) */
 @media screen and (max-width: 950px) {
 
     /* Show hamburger */
@@ -230,7 +205,6 @@ h1 {
       z-index: 9999;
     }
   
-    /* Style only nav links, not logo */
     .topnav.responsive .nav-links a {
       width: 100%;
       padding: 12px;
