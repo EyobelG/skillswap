@@ -962,7 +962,6 @@
             const profileSection = document.getElementById('profileSection');
             const mapCard = document.getElementById('locationMapCard'); // Reference to the map container
 
-            // --- CRITICAL EDIT: Handle Location separately ---
             if (field === 'location') {
                 // 1. Hide the main profile section
                 profileSection.classList.add('hidden');
@@ -974,13 +973,13 @@
                 }
                 return; // Exit, as we don't open the standard modal
             }
-            // --- END CRITICAL EDIT ---
+
 
             const titles = {
                 name: 'Edit Full Name',
                 email: 'Edit Email',
                 phone: 'Edit Phone Number',
-                location: 'Edit Location', // Only used for the title object, not the action
+                location: 'Edit Location',
                 password: 'Change Password'
             };
 
@@ -988,7 +987,7 @@
                 name: document.getElementById('nameValue').textContent.trim(),
                 email: document.getElementById('emailValue').textContent.trim(),
                 phone: document.getElementById('phoneValue').textContent.trim(),
-                password: '' // Never pre-fill password
+                password: '' 
             };
 
             document.getElementById('modalTitle').textContent = titles[field];
@@ -1021,7 +1020,6 @@
             currentField = '';
         }
 
-        // You also need this function for the map card's cancel button
         function closeLocationEdit() {
             document.getElementById('locationMapCard').classList.add('hidden');
             document.getElementById('profileSection').classList.remove('hidden');
@@ -1052,7 +1050,6 @@
             closeEditModal();
         }
 
-        // Payment Modal Functions
         function openPaymentPopup() {
             document.getElementById('paymentModal').classList.remove('hidden');
         }
@@ -1317,11 +1314,9 @@ function showSection(section) {
 async function reverseGeocodeAndUpdateUI(lat, lng) {
     const locationValueElement = document.getElementById('locationValue');
     
-    // Set a temporary message while waiting for the API response
     locationValueElement.textContent = '... Resolving Address ...';
 
     try {
-        // Call Nominatim reverse geocoding API directly
         const response = await fetch(
             `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
         );
@@ -1332,12 +1327,11 @@ async function reverseGeocodeAndUpdateUI(lat, lng) {
         
         const data = await response.json();
         
-        let addressToDisplay = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`; // Fallback
+        let addressToDisplay = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`; 
         
         if (data && data.display_name) {
             addressToDisplay = data.display_name;
             
-            // Or create a shorter version from address components
             if (data.address) {
                 const addr = data.address;
                 const parts = [
@@ -1377,7 +1371,6 @@ function onDragEnd() {
     
     console.log(`Marker dragged. New coords: Lat ${currentCoords.lat}, Lng ${currentCoords.lng}`);
 
-    // Call the function to update the HTML field and savedLocationText
     reverseGeocodeAndUpdateUI(currentCoords.lat, currentCoords.lng);
     
     map.panTo(latLng);
@@ -1514,9 +1507,6 @@ document.addEventListener('DOMContentLoaded', () => {
     reverseGeocodeAndUpdateUI(currentCoords.lat, currentCoords.lng); 
 });
 
-
-
-    // Hamburger menu toggle function
     function toggleMenu() {
         var nav = document.getElementById("myTopnav");
         nav.classList.toggle("responsive");
