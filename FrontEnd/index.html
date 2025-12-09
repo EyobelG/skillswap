@@ -718,9 +718,26 @@
                     font-size: 24px;
                     margin: 50px 0 40px 0;
                 }
-            }
-        
+        }
 
+        .star-rating {
+            display: flex;
+            gap: 5px;
+            justify-content: flex-start;
+            margin-top: 10px;
+        }
+
+        .star {
+            font-size: 1.5em;
+            color: #e0e0e0;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .star:hover,
+        .star.selected {
+            color: #FFD700; /* Gold color for selected stars */
+        }
     </style>
 </head>
 <body>
@@ -1049,6 +1066,42 @@ const members = [
             displayMembers(filtered);
         }
 
+        // Display members
+        function displayMembers(membersToDisplay) {
+            const container = document.getElementById('resultsContainer');
+            const countElement = document.getElementById('resultsCount');
+            
+            container.innerHTML = '';
+            
+            if (membersToDisplay.length === 0) {
+                container.innerHTML = '<div class="no-results">😔 No instructors found. Try adjusting your search!</div>';
+                countElement.textContent = '';
+                return;
+            }
+            
+            countElement.textContent = `Found ${membersToDisplay.length} instructor${membersToDisplay.length !== 1 ? 's' : ''}`;
+            
+            membersToDisplay.forEach(member => {
+                const card = document.createElement('div');
+                card.className = 'member-card';
+                card.onclick = () => showHandshakeAndChat(member);
+                
+                card.innerHTML = `
+                    <div class="member-avatar">
+                        <img src="${member.image}" alt="${member.name}" onerror="this.src='https://via.placeholder.com/300?text=${encodeURIComponent(member.name)}'">
+                    </div>
+                    <div class="member-name">${member.name}</div>
+                    <div class="member-age">Age: ${member.age}</div>
+                    <div class="member-description">${member.description}</div>
+                    <div class="member-categories">
+                        ${member.categories.map(cat => `<span class="category-tag">${cat}</span>`).join('')}
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+
         // Initialize
         function init() {
             createCategoryFilters();
@@ -1281,6 +1334,38 @@ async function getAIResponse(message, member) {
 
         
         init();
+
+        function rateUser(event, userId, rating) {
+            event.stopPropagation(); // Prevent triggering the card click event
+
+            // Highlight the selected stars
+            const starContainer = document.querySelector(`.star-rating[data-user-id="${userId}"]`);
+            const stars = starContainer.querySelectorAll('.star');
+            stars.forEach(star => {
+                const starValue = parseInt(star.getAttribute('data-value'), 10);
+                if (starValue <= rating) {
+                    star.classList.add('selected');
+                } else {
+                    star.classList.remove('selected');
+                }
+            });
+
+            // Send the rating to the backend (optional)
+            console.log(`User ${userId} rated ${rating} stars`);
+            // Example: Send the rating to the backend
+            /*
+            fetch('/rate-user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, rating })
+            }).then(response => {
+                if (!response.ok) {
+                    console.error('Failed to submit rating');
+                }
+            });
+            */
+        }
+
         // Load footer dynamically
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('footer-container').innerHTML = `
