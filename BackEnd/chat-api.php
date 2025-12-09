@@ -22,17 +22,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
-// Get POST data
+// Get POST data - NOW JUST EXPECTING A MESSAGE
 $input = json_decode(file_get_contents('php://input'), true);
-$history = $input['history'] ?? []; 
+$message = $input['message'] ?? ''; 
 $memberName = $input['memberName'] ?? 'Instructor';
 $memberAge = $input['memberAge'] ?? '40';
 $memberCategories = $input['memberCategories'] ?? 'programming';
 $memberDescription = $input['memberDescription'] ?? 'A highly experienced mentor who specializes in web development.';
 
-if (empty($history)) {
+if (empty($message)) {
     http_response_code(400);
-    echo json_encode(['error' => 'Conversation history is required']);
+    echo json_encode(['error' => 'Message is required']);
     exit;
 }
 
@@ -49,15 +49,22 @@ Your personality and speaking style should match your profession:
 Remember: You are chatting with a potential student who wants to learn from you, 
 and potentially swap skills.";
 
-// Define the model - use stable version
+// Define the model
 $modelName = 'gemini-1.5-flash';
 
 // Prepare API request to Gemini
 $apiUrl = "https://generativelanguage.googleapis.com/v1/models/{$modelName}:generateContent?key={$API_KEY}";
 
-// Correct structure for Gemini API
+// Simple structure - just the current message
 $requestData = [
-    'contents' => $history,
+    'contents' => [
+        [
+            'role' => 'user',
+            'parts' => [
+                ['text' => $message]
+            ]
+        ]
+    ],
     'systemInstruction' => [
         'parts' => [
             ['text' => $systemPrompt]

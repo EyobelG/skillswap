@@ -1037,192 +1037,175 @@
 
         const API_ENDPOINT = 'https://joonh.sgedu.site/skillswap/backend/chat-api.php'; 
 
-    // Helper function to escape HTML
-    function escapeHtml(text) {
-        const map = {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#039;'
-        };
-        return text.replace(/[&<>"']/g, (m) => map[m]);
-    }
+        // Helper function to escape HTML
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, (m) => map[m]);
+        }
 
-    // Open chat modal
-    function openChatModal(member) {
-        // Remove any existing modal first
-        document.querySelectorAll('.chat-modal').forEach(modal => modal.remove());
+        // Open chat modal
+        function openChatModal(member) {
+            // Remove any existing modal first
+            document.querySelectorAll('.chat-modal').forEach(modal => modal.remove());
 
-        const chatModal = document.createElement('div');
-        chatModal.className = 'chat-modal';
-        chatModal.innerHTML = `
-            <div class="chat-container">
-                <div class="chat-header">
-                    <div class="chat-header-info">
-                        <img src="${member.image}" alt="${member.name}" class="chat-avatar" onerror="this.src='https://via.placeholder.com/50'">
-                        <div class="chat-user-info">
-                            <h3>${member.name}</h3>
-                            <p>${member.categories.join(', ')}</p>
+            const chatModal = document.createElement('div');
+            chatModal.className = 'chat-modal';
+            chatModal.innerHTML = `
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <div class="chat-header-info">
+                            <img src="${member.image}" alt="${member.name}" class="chat-avatar" onerror="this.src='https://via.placeholder.com/50'">
+                            <div class="chat-user-info">
+                                <h3>${member.name}</h3>
+                                <p>${member.categories.join(', ')}</p>
+                            </div>
+                        </div>
+                        <button class="close-chat" onclick="this.closest('.chat-modal').remove()">×</button>
+                    </div>
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-welcome">
+                            <h4>🤝 Start a conversation with ${member.name}!</h4>
+                            <p>Introduce yourself and let them know what you'd like to learn.</p>
                         </div>
                     </div>
-                    <button class="close-chat" onclick="this.closest('.chat-modal').remove()">×</button>
-                </div>
-                <div class="chat-messages" id="chatMessages">
-                    <div class="chat-welcome">
-                        <h4>🤝 Start a conversation with ${member.name}!</h4>
-                        <p>Introduce yourself and let them know what you'd like to learn.</p>
+                    <div class="chat-input-container">
+                        <div class="chat-input-wrapper">
+                            <input type="text" class="chat-input" placeholder="Type your message here..." id="messageInput">
+                            <button class="send-btn" id="sendBtn">Send</button>
+                        </div>
                     </div>
                 </div>
-                <div class="chat-input-container">
-                    <div class="chat-input-wrapper">
-                        <input type="text" class="chat-input" placeholder="Type your message here..." id="messageInput">
-                        <button class="send-btn" id="sendBtn">Send</button>
-                    </div>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(chatModal);
-        
-        // Store current member and initialize conversation history
-        chatModal.currentMember = member;
-        chatModal.conversationHistory = []; // <-- INITIALIZE HISTORY
-        
-        // Focus on input
-        setTimeout(() => {
-            document.getElementById('messageInput').focus();
-        }, 100);
-        
-        // Add event listeners
-        document.getElementById('sendBtn').addEventListener('click', () => sendMessage(chatModal));
-        document.getElementById('messageInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendMessage(chatModal);
-            }
-        });
-    }
-
-    // Send message function with AI response (UPDATED FOR HISTORY)
-    async function sendMessage(chatModal) {
-        const input = document.getElementById('messageInput');
-        const message = input.value.trim();
-        
-        if (!message) return;
-        
-        const member = chatModal.currentMember;
-        const messagesContainer = document.getElementById('chatMessages');
-        
-        // Remove welcome message if it exists
-        const welcomeMsg = messagesContainer.querySelector('.chat-welcome');
-        if (welcomeMsg) {
-            welcomeMsg.remove();
+            `;
+            document.body.appendChild(chatModal);
+            
+            // Store current member
+            chatModal.currentMember = member;
+            
+            // Focus on input
+            setTimeout(() => {
+                document.getElementById('messageInput').focus();
+            }, 100);
+            
+            // Add event listeners
+            document.getElementById('sendBtn').addEventListener('click', () => sendMessage(chatModal));
+            document.getElementById('messageInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage(chatModal);
+                }
+            });
         }
-        
-        // Add user message to UI
-        const userMessage = document.createElement('div');
-        userMessage.className = 'message user';
-        userMessage.innerHTML = `<div class="message-bubble">${escapeHtml(message)}</div>`;
-        messagesContainer.appendChild(userMessage);
 
-        // Add user message to history (role: user)
-        chatModal.conversationHistory.push({ role: "user", parts: [{ text: message }] }); 
-        
-        // Clear input
-        input.value = '';
-        
-        // Scroll to bottom
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        
-        // Show typing indicator
-        const typingDiv = document.createElement('div');
-        typingDiv.className = 'message instructor';
-        typingDiv.innerHTML = `
-            <div class="typing-indicator">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        `;
-        messagesContainer.appendChild(typingDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        
-        // Get AI response
-        try {
-            // Pass the ENTIRE history to the backend
-            const response = await getAIResponse(chatModal.conversationHistory, member); 
+        // Send message function 
+        async function sendMessage(chatModal) {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
             
-            // Remove typing indicator
-            typingDiv.remove();
+            if (!message) return;
             
-            // Add instructor message to UI
-            const instructorMessage = document.createElement('div');
-            instructorMessage.className = 'message instructor';
-            instructorMessage.innerHTML = `<div class="message-bubble">${escapeHtml(response)}</div>`;
-            messagesContainer.appendChild(instructorMessage);
-
-            // Add AI message to history (role: model)
-            chatModal.conversationHistory.push({ role: "model", parts: [{ text: response }] });
+            const member = chatModal.currentMember;
+            const messagesContainer = document.getElementById('chatMessages');
+            
+            // Remove welcome message if it exists
+            const welcomeMsg = messagesContainer.querySelector('.chat-welcome');
+            if (welcomeMsg) {
+                welcomeMsg.remove();
+            }
+            
+            // Add user message to UI
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message user';
+            userMessage.innerHTML = `<div class="message-bubble">${escapeHtml(message)}</div>`;
+            messagesContainer.appendChild(userMessage);
+            
+            // Clear input
+            input.value = '';
             
             // Scroll to bottom
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        } catch (error) {
-            typingDiv.remove();
-            console.error('Error getting AI response:', error);
             
-            // Simple error handling messages
-            const errorMessage1 = document.createElement('div');
-            errorMessage1.className = 'message instructor';
-            errorMessage1.innerHTML = `<div class="message-bubble">Hello! I am away from my computer right now, please try again later!</div>`;
-            messagesContainer.appendChild(errorMessage1);
-            
-            messagesContainer.appendChild(document.createElement('br')); 
-
-            const errorMessage2 = document.createElement('div');
-            errorMessage2.className = 'message instructor';
-            errorMessage2.innerHTML = `<div class="message-bubble">I appreciate your patience.</div>`;
-            messagesContainer.appendChild(errorMessage2);
-            
+            // Show typing indicator
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message instructor';
+            typingDiv.innerHTML = `
+                <div class="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            `;
+            messagesContainer.appendChild(typingDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
             
-            chatModal.conversationHistory.pop(); 
-        }
-    }
-
-    // Get AI response using your PHP backend (UPDATED FOR HISTORY)
-    async function getAIResponse(history, member) {
-        // Construct the payload matching what chat-api.php expects
-        const payload = {
-            history: history, // <-- Send the entire history array
-            memberName: member.name,
-            memberAge: member.age,
-            memberCategories: member.categories.join(', '),
-            memberDescription: member.description
-        };
-
-        const response = await fetch(API_ENDPOINT, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-        });
-
-        // Handle HTTP errors
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`API Request Failed (HTTP ${response.status}): ${errorText}`);
-        }
-
-        const data = await response.json();
-
-        // Handle errors returned in the JSON payload
-        if (data.error) {
-            throw new Error(`Backend Error: ${data.error} - ${data.details || ''}`);
+            // Get AI response
+            try {
+                // Just send the current message, no history!
+                const response = await getAIResponse(message, member); 
+                
+                // Remove typing indicator
+                typingDiv.remove();
+                
+                // Add instructor message to UI
+                const instructorMessage = document.createElement('div');
+                instructorMessage.className = 'message instructor';
+                instructorMessage.innerHTML = `<div class="message-bubble">${escapeHtml(response)}</div>`;
+                messagesContainer.appendChild(instructorMessage);
+                
+                // Scroll to bottom
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            } catch (error) {
+                typingDiv.remove();
+                console.error('Error getting AI response:', error);
+                
+                // Show error message
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'message instructor';
+                errorMessage.innerHTML = `<div class="message-bubble">Hello! I am away from my computer right now, please try again later!</div>`;
+                messagesContainer.appendChild(errorMessage);
+                
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
         }
 
-        // Return the AI's response text
-        return data.response;
-    }
+        async function getAIResponse(message, member) {
+            // Simple payload 
+            const payload = {
+                message: message,
+                memberName: member.name,
+                memberAge: member.age,
+                memberCategories: member.categories.join(', '),
+                memberDescription: member.description
+            };
+
+            const response = await fetch(API_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            // Handle HTTP errors
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`API Request Failed (HTTP ${response.status}): ${errorText}`);
+            }
+
+            const data = await response.json();
+
+            // Handle errors returned in the JSON payload
+            if (data.error) {
+                throw new Error(`Backend Error: ${data.error} - ${data.details || ''}`);
+            }
+
+            // Return the AI's response text
+            return data.response;
+        }
         init();
         // Load footer dynamically
         document.addEventListener('DOMContentLoaded', function() {
