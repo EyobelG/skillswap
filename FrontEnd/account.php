@@ -1,3 +1,299 @@
+<?php
+    ini_set('session.cookie_domain', '.joonh.sgedu.site');
+    ini_set('session.cookie_secure', 1);
+    ini_set('session.cookie_httponly', 1);
+    session_start();
+    
+    $db_host = 'localhost';
+    $db_user = 'utnq9qzvkroxc';
+    $db_pass = 'cs20finalproj';
+    $db_name = 'dbdtf6cle3tkfo';
+
+    $members_host = 'localhost';
+    $members_user = 'utnq9qzvkroxc';
+    $members_pass = 'cs20finalproj';
+    $members_name = 'dbfxsgcb4otskb';
+
+    session_start();
+    
+    $user_id = $_SESSION["user_id"];
+    $password = $_SESSION["password"];
+
+    $authdbrow;
+    $detailsdbrow;
+
+    $validcredentials = FALSE;
+    $error = FALSE;
+
+    $mysqli = new mysqli($db_host, $db_user, $db_pass, $db_name);
+    if ($mysqli->connect_error) {
+        die("Connection failed: " . $mysqli->connect_error);
+    }
+
+    $mysqli_members = new mysqli($members_host, $members_user, $members_pass, $members_name);
+    if ($mysqli_members->connect_error) {
+        die("Connection failed: " . $mysqli_members->connect_error);
+    }
+
+    try {
+        if ($user_id == NULL || $password == NULL) {
+            if ($user_id == NULL) {
+                echo "unull";
+            }
+            if ($password == NULL) {
+                echo "pnull";
+            }
+            throw new Exception("You're probably seeing this message because you pressed the back button on your browser.");
+        }
+
+        $password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+        $authresult = mysqli_query($mysqli, "SELECT * FROM users WHERE user_id = '$user_id'");
+        $detailsresult = mysqli_query($mysqli, "SELECT * FROM users WHERE user_id = '$user_id'");
+        if ($authresult && $detailsresult) {
+            if (mysqli_num_rows($authresult) == 1) { // check if username is in the db
+                $authdbrow = $authresult->fetch_array();
+                if (password_verify($password, $authdbrow["password"])) {
+                    $validcredentials = true;
+                    $detailsdbrow = $detailsresult->fetch_array();
+                }
+            }
+        } else {
+            throw new Exception("ERROR: database connection lost");
+        }
+
+        if (!$validcredentials) {
+            echo "<p>You aren't logged in!.</p>";
+            echo "<p>Please try to <a href=\"signin.html\">sign in</a> or <a href=\"signup.html\">sign up</a> to make an account.</p>";
+            throw new Exception("<p>ERROR: no account</p>");
+        }
+
+
+    } catch (Exception $e) {
+        echo $e->getMessage();
+        $error = TRUE;
+    }
+
+
+    if (!$error) {
+
+        // GET ACCOOUNT DETAILS
+        $fullName = $authdbrow["name"];
+        $email = $authdbrow["email"];
+        $phone = $authdbrow["phone"];
+
+        $age = $detailsdbrow["age"];
+        $description = $detailsdbrow["description"];
+        $categories = $detailsdbrow["categories"];
+        $wantsToLearn = $detailsdbrow["wantsToLearn"];
+        $image = $detailsdbrow["image"];
+        $pos_ratings = $detailsdbrow["pos_ratings"];
+        $total_ratings = $detailsdbrow["total_ratings"];
+
+
+        echo " <!-- Main Wrapper -->
+            <div class='main-wrapper'>
+                <!-- Sidebar -->
+                <div class='sidebar' id='sidebar'>
+                    <div class='profile-card'>
+                        <div>
+                            <img id='profilePhoto' class='profile-photo' src='images/$image' alt='Profile Photo' />
+                            <input type='file' id='photoUpload' style='display:none' accept='image/*' />
+                            <button class='upload-btn' onclick='document.getElementById('photoUpload').click()'>Upload Photo</button>
+                        </div>
+                        <div>
+                            <div class='profile-name' id='profileName'>$fullName</div>
+                            <div class='profile-email' id='profileEmailDisplay'>$email</div>
+                        </div>
+                    </div>
+
+                    <div class='menu-card'>
+                        <button class='menu-item active' onclick='showSection('profile')'>Profile</button>
+                        <button class='menu-item' onclick='showSection('billing')'>Billing & Payments</button>
+                        <button class='menu-item' onclick='showSection('skills')'>Skills</button>
+                        <button class='menu-item' onclick='showSection('security')'>Security</button>
+                    </div>
+                </div>
+
+                <!-- Content Area -->
+                <div class='content'>
+                    <!-- PROFILE SECTION -->
+                    <div id='profileSection' class='main-section'>
+                        <h2 class='section-title'>Profile Information</h2>
+                        <p class='section-description'>Manage your personal information and account details</p>
+
+                        <div class='field-card'>
+                            <div class='field-info'>
+                                <div class='field-label'>Full Name</div>
+                                <div id='nameValue' class='field-value'>$fullName</div>
+                            </div>
+                            <button class='edit-btn' onclick='openEditModal('name')'>Edit</button>
+                        </div>
+
+                        <div class='field-card'>
+                            <div class='field-info'>
+                                <div class='field-label'>Email</div>
+                                <div id='emailValue' class='field-value'>$email</div>
+                            </div>
+                            <button class='edit-btn' onclick='openEditModal('email')'>Edit</button>
+                        </div>
+
+                        <div class='field-card'>
+                            <div class='field-info'>
+                                <div class='field-label'>Phone Number</div>
+                                <div id='phoneValue' class='field-value'>$phone</div>
+                            </div>
+                            <button class='edit-btn' onclick='openEditModal('phone')'>Edit</button>
+                        </div>
+
+                        <div class='field-card'>
+                            <div class='field-info'>
+                                <div class='field-label'>Location</div>
+                                <div id='locationValue' class='field-value'>Cambridge, MA</div>
+                            </div>
+                            <button class='edit-btn' onclick='openEditModal('location')'>Edit</button>
+                        </div>
+                        <div id='locationMapCard' class='main-section' style='margin-top: 2rem; padding: 2.5rem;'>
+                            <h2 class='section-title' style='margin-bottom: 0.5rem;'>📍 Set Your Public Location</h2>
+                                <p class='section-description' style='margin-bottom: 1rem;'>
+                                    Use the search box or drag the marker to set your approximate public meeting location.
+                                </p>
+
+                            <div id='geocoder-container' style='margin-bottom: 1rem;'></div> 
+
+                            <div id='profileMap' style='height: 400px; border-radius: 0.75rem; border: 2px solid rgba(251, 191, 36, 0.3);'></div>
+                            <button class='save-btn' style='margin-top: 1.5rem;' onclick='saveMapLocation()'>Save Location</button>
+                        </div>
+                    </div>
+
+                    <!-- BILLING SECTION -->
+                    <div id='billingSection' class='main-section'>
+                        <h2 class='section-title'>Billing & Payments</h2>
+                        <p class='section-description'>Manage your payment methods and billing information</p>
+
+                        <button class='add-method-btn' onclick='openPaymentPopup()'>Add Payment Method</button>
+
+                        <div id='paymentList'>
+                            <p style='color: #e9d5ff; text-align: center; padding: 2rem;'>No payment methods added yet.</p>
+                        </div>
+                    </div>
+
+                    <!-- SKILLS SECTION -->
+                    <div id='skillsSection' class='main-section'>
+                        <h2 class='section-title'>Skills</h2>
+                        <p class='section-description'>Manage your skills and expertise levels</p>
+
+                        <button class='add-method-btn' onclick='openSkillModal()'>Manage Skills</button>
+
+                        <div id='skillDisplay'>
+                            <p style='color: #e9d5ff; text-align: center; padding: 2rem;'>$categories</p>
+                        </div>
+                    </div>
+
+                    <!-- SECURITY SECTION -->
+                    <div id='securitySection' class='main-section'>
+                        <h2 class='section-title'>Security Settings</h2>
+                        <p class='section-description'>Manage your password and security preferences</p>
+
+                        <div class='field-card'>
+                            <div class='field-info'>
+                                <div class='field-label'>Password</div>
+                                <div class='field-value'>••••••••••</div>
+                            </div>
+                            <button class='edit-btn' onclick='openEditModal('password')'>Change</button>
+                        </div>
+
+                        <div class='field-card'>
+                            <div class='field-info'>
+                                <div class='field-label'>Two-Factor Authentication</div>
+                                <div class='field-value'>Disabled</div>
+                            </div>
+                            <button class='edit-btn' onclick='alert('2FA setup coming soon!')'>Enable</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class='mobile-menu-toggle' onclick='toggleMobileMenu()'>☰</button>
+
+            <!-- EDIT MODAL -->
+            <!-- <div id='editModal' class='modal hidden'>
+                <div class='modal-content'>
+                    <button class='close-btn' onclick='closeEditModal()'>×</button>
+                    <div class='modal-header' id='modalTitle'></div>
+                    <input id='modalInput' type='text' placeholder='Enter new value' />
+                    <button class='save-btn' onclick='saveEdit()'>Save Changes</button>
+                </div>
+            </div> -->
+
+            <div id='editModal' class='modal hidden'> 
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <h3 id='modalTitle'>Edit Field</h3> 
+                    <span class='close-btn' onclick='closeEditModal()'>×</span>
+                </div>
+                <div class='modal-body'>
+                    <input type='text' id='modalInput' class='text-input' placeholder='Enter new value'> 
+                </div>
+                <div class='modal-footer'>
+                    <button class='btn cancel-btn' onclick='closeEditModal()'>Cancel</button>
+                    <button class='btn save-btn' onclick='saveEdit()'>Save Changes</button> 
+                </div>
+            </div>
+        </div>
+
+            <!-- PAYMENT MODAL -->
+            <div id='paymentModal' class='modal hidden'>
+                <div class='modal-content'>
+                    <button class='close-btn' onclick='closePaymentPopup()'>×</button>
+                    <div class='modal-header'>Add Payment Method</div>
+
+                    <input type='text' id='cardName' placeholder='Name on Card' />
+                    <input type='text' id='cardNumber' placeholder='Card Number' maxlength='19' />
+                    
+                    <div class='payment-grid'>
+                        <input type='text' id='expiry' placeholder='MM/YY' maxlength='5' />
+                        <input type='text' id='cvv' placeholder='CVV' maxlength='4' />
+                    </div>
+
+                    <input type='text' id='billingAddress' placeholder='Billing Address' />
+
+                    <button class='save-btn' onclick='savePayment()'>Save Payment Method</button>
+                </div>
+            </div>
+
+            <!-- SKILL MODAL -->
+            <div id='skillModal' class='modal hidden'>
+                <div class='modal-content'>
+                    <button class='close-btn' onclick='closeSkillModal()'>×</button>
+                    <div class='modal-header'>Manage Skills</div>
+
+                    <div class='skill-list' id='skillList'></div>
+
+                    <div style='background: rgba(107, 33, 168, 0.4); border: 2px solid rgba(251, 191, 36, 0.3); border-radius: 0.75rem; padding: 1.5rem; margin-top: 1rem;'>
+                        <h4 style='color: #fbbf24; font-size: 1.125rem; margin-bottom: 1rem;'>Add New Skill</h4>
+                        <input type='text' id='newSkillName' placeholder='Skill Name (e.g., Tennis, Guitar)' />
+                        <select id='newSkillLevel'>
+                            <option value='Beginner'>Beginner</option>
+                            <option value='Intermediate'>Intermediate</option>
+                            <option value='Advanced'>Advanced</option>
+                            <option value='Expert'>Expert</option>
+                        </select>
+                        <button class='save-btn' onclick='addSkill()'>Add Skill</button>
+                    </div>
+                </div>
+            </div>
+        <div id='footer-container'></div>`";
+    }
+
+
+    $mysqli->close();
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -210,6 +506,7 @@
         }
 
         .main-section {
+            margin-bottom: 20px;
             background: linear-gradient(135deg, #6b21a8 0%, #5b21b6 100%);
             border-radius: 1rem;
             padding: 2.5rem;
@@ -713,206 +1010,10 @@
         <a href="signup.html">Sign Up</a>
         <a href="signin.html">Sign In</a>
       </div>
-      <button class="icon" onclick="toggleMenu()" aria-label="Menu">
-        <i class="fa fa-bars"></i>
-    </button>
-
+        <button class="icon" onclick="toggleMenu()" aria-label="Menu">
+            <i class="fa fa-bars"></i>
+        </button>
     </nav>
-
-    <!-- Main Wrapper -->
-    <div class="main-wrapper">
-        <!-- Sidebar -->
-        <div class="sidebar" id="sidebar">
-            <div class="profile-card">
-                <div>
-                    <img id="profilePhoto" class="profile-photo" src="images/mia.png" alt="Profile Photo" />
-                    <input type="file" id="photoUpload" style="display:none" accept="image/*" />
-                    <button class="upload-btn" onclick="document.getElementById('photoUpload').click()">Upload Photo</button>
-                </div>
-                <div>
-                    <div class="profile-name" id="profileName">Mia Walker</div>
-                    <div class="profile-email" id="profileEmailDisplay">miawalker@yahoo.com</div>
-                </div>
-            </div>
-
-            <div class="menu-card">
-                <button class="menu-item active" onclick="showSection('profile')">Profile</button>
-                <button class="menu-item" onclick="showSection('billing')">Billing & Payments</button>
-                <button class="menu-item" onclick="showSection('skills')">Skills</button>
-                <button class="menu-item" onclick="showSection('security')">Security</button>
-            </div>
-        </div>
-
-        <!-- Content Area -->
-        <div class="content">
-            <!-- PROFILE SECTION -->
-            <div id="profileSection" class="main-section">
-                <h2 class="section-title">Profile Information</h2>
-                <p class="section-description">Manage your personal information and account details</p>
-
-                <div class="field-card">
-                    <div class="field-info">
-                        <div class="field-label">Full Name</div>
-                        <div id="nameValue" class="field-value">Mia Walker</div>
-                    </div>
-                    <button class="edit-btn" onclick="openEditModal('name')">Edit</button>
-                </div>
-
-                <div class="field-card">
-                    <div class="field-info">
-                        <div class="field-label">Email</div>
-                        <div id="emailValue" class="field-value">miawalker@yahoo.com</div>
-                    </div>
-                    <button class="edit-btn" onclick="openEditModal('email')">Edit</button>
-                </div>
-
-                <div class="field-card">
-                    <div class="field-info">
-                        <div class="field-label">Phone Number</div>
-                        <div id="phoneValue" class="field-value">+1 (555) 123-4567</div>
-                    </div>
-                    <button class="edit-btn" onclick="openEditModal('phone')">Edit</button>
-                </div>
-
-                <div class="field-card">
-                    <div class="field-info">
-                        <div class="field-label">Location</div>
-                        <div id="locationValue" class="field-value">Cambridge, MA</div>
-                    </div>
-                    <button class="edit-btn" onclick="openEditModal('location')">Edit</button>
-                </div>
-                <div id="locationMapCard" class="main-section" style="margin-top: 2rem; padding: 2.5rem;">
-                    <h2 class="section-title" style="margin-bottom: 0.5rem;">📍 Set Your Public Location</h2>
-                        <p class="section-description" style="margin-bottom: 1rem;">
-                             Use the search box or drag the marker to set your approximate public meeting location.
-                        </p>
-
-                    <div id="geocoder-container" style="margin-bottom: 1rem;"></div> 
-
-                     <div id="profileMap" style="height: 400px; border-radius: 0.75rem; border: 2px solid rgba(251, 191, 36, 0.3);"></div>
-                     <button class="save-btn" style="margin-top: 1.5rem;" onclick="saveMapLocation()">Save Location</button>
-                </div>
-            </div>
-
-            <!-- BILLING SECTION -->
-            <div id="billingSection" class="main-section hidden">
-                <h2 class="section-title">Billing & Payments</h2>
-                <p class="section-description">Manage your payment methods and billing information</p>
-
-                <button class="add-method-btn" onclick="openPaymentPopup()">Add Payment Method</button>
-
-                <div id="paymentList">
-                    <p style="color: #e9d5ff; text-align: center; padding: 2rem;">No payment methods added yet.</p>
-                </div>
-            </div>
-
-            <!-- SKILLS SECTION -->
-            <div id="skillsSection" class="main-section hidden">
-                <h2 class="section-title">Skills</h2>
-                <p class="section-description">Manage your skills and expertise levels</p>
-
-                <button class="add-method-btn" onclick="openSkillModal()">Manage Skills</button>
-
-                <div id="skillDisplay">
-                    <p style="color: #e9d5ff; text-align: center; padding: 2rem;">No skills added yet.</p>
-                </div>
-            </div>
-
-            <!-- SECURITY SECTION -->
-            <div id="securitySection" class="main-section hidden">
-                <h2 class="section-title">Security Settings</h2>
-                <p class="section-description">Manage your password and security preferences</p>
-
-                <div class="field-card">
-                    <div class="field-info">
-                        <div class="field-label">Password</div>
-                        <div class="field-value">••••••••••</div>
-                    </div>
-                    <button class="edit-btn" onclick="openEditModal('password')">Change</button>
-                </div>
-
-                <div class="field-card">
-                    <div class="field-info">
-                        <div class="field-label">Two-Factor Authentication</div>
-                        <div class="field-value">Disabled</div>
-                    </div>
-                    <button class="edit-btn" onclick="alert('2FA setup coming soon!')">Enable</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Mobile Menu Toggle -->
-    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
-
-    <!-- EDIT MODAL -->
-    <!-- <div id="editModal" class="modal hidden">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeEditModal()">×</button>
-            <div class="modal-header" id="modalTitle"></div>
-            <input id="modalInput" type="text" placeholder="Enter new value" />
-            <button class="save-btn" onclick="saveEdit()">Save Changes</button>
-        </div>
-    </div> -->
-
-    <div id="editModal" class="modal hidden"> 
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 id="modalTitle">Edit Field</h3> 
-            <span class="close-btn" onclick="closeEditModal()">×</span>
-        </div>
-        <div class="modal-body">
-            <input type="text" id="modalInput" class="text-input" placeholder="Enter new value"> 
-        </div>
-        <div class="modal-footer">
-            <button class="btn cancel-btn" onclick="closeEditModal()">Cancel</button>
-            <button class="btn save-btn" onclick="saveEdit()">Save Changes</button> 
-        </div>
-    </div>
-</div>
-
-    <!-- PAYMENT MODAL -->
-    <div id="paymentModal" class="modal hidden">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closePaymentPopup()">×</button>
-            <div class="modal-header">Add Payment Method</div>
-
-            <input type="text" id="cardName" placeholder="Name on Card" />
-            <input type="text" id="cardNumber" placeholder="Card Number" maxlength="19" />
-            
-            <div class="payment-grid">
-                <input type="text" id="expiry" placeholder="MM/YY" maxlength="5" />
-                <input type="text" id="cvv" placeholder="CVV" maxlength="4" />
-            </div>
-
-            <input type="text" id="billingAddress" placeholder="Billing Address" />
-
-            <button class="save-btn" onclick="savePayment()">Save Payment Method</button>
-        </div>
-    </div>
-
-    <!-- SKILL MODAL -->
-    <div id="skillModal" class="modal hidden">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeSkillModal()">×</button>
-            <div class="modal-header">Manage Skills</div>
-
-            <div class="skill-list" id="skillList"></div>
-
-            <div style="background: rgba(107, 33, 168, 0.4); border: 2px solid rgba(251, 191, 36, 0.3); border-radius: 0.75rem; padding: 1.5rem; margin-top: 1rem;">
-                <h4 style="color: #fbbf24; font-size: 1.125rem; margin-bottom: 1rem;">Add New Skill</h4>
-                <input type="text" id="newSkillName" placeholder="Skill Name (e.g., Tennis, Guitar)" />
-                <select id="newSkillLevel">
-                    <option value="Beginner">Beginner</option>
-                    <option value="Intermediate">Intermediate</option>
-                    <option value="Advanced">Advanced</option>
-                    <option value="Expert">Expert</option>
-                </select>
-                <button class="save-btn" onclick="addSkill()">Add Skill</button>
-            </div>
-        </div>
-    </div>
-    <div id="footer-container"></div>
 
     <script>
     
@@ -1281,238 +1382,239 @@
         });
 
         // --- LEAFLET CONFIG ---
-let map;
-let marker;
-let geocoder = L.Control.Geocoder.nominatim(); // Initialize here
-// Initial coordinates (Cambridge, MA)
-let currentCoords = { lat: 42.3736, lng: -71.1097 }; 
-// Stores the human-readable address fetched via reverse geocoding
-let savedLocationText = 'Cambridge, MA'; 
-// ---------------------
 
-// Section Navigation
-function showSection(section) {
-    document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
-    // Note: Added null check for robustness
-    const menuItem = document.querySelector(`[onclick="showSection('${section}')"]`);
-    if (menuItem) {
-        menuItem.classList.add('active');
-    }
+        let map;
+    let marker;
+    let geocoder = L.Control.Geocoder.nominatim(); // Initialize here
+    // Initial coordinates (Cambridge, MA)
+    let currentCoords = { lat: 42.3736, lng: -71.1097 }; 
+    // Stores the human-readable address fetched via reverse geocoding
+    let savedLocationText = 'Cambridge, MA'; 
+    // ---------------------
 
-    document.querySelectorAll('.main-section').forEach(s => s.classList.add('hidden'));
-    document.getElementById(section + 'Section').classList.remove('hidden');
-
-    // Close mobile menu (if implemented)
-    const sidebar = document.getElementById('sidebar');
-    if (sidebar && window.innerWidth <= 768) {
-            sidebar.classList.remove('active');
-    }
-}
-
-// --- LEAFLET MAP FUNCTIONS ---
-/**
- * Converts coordinates to a human-readable address using reverse geocoding
- * and updates the UI (locationValue element) and the global savedLocationText.
- */
-async function reverseGeocodeAndUpdateUI(lat, lng) {
-    const locationValueElement = document.getElementById('locationValue');
-    
-    // Set a temporary message while waiting for the API response
-    locationValueElement.textContent = '... Resolving Address ...';
-
-    try {
-        // Call Nominatim reverse geocoding API directly
-        const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
-        );
-        
-        if (!response.ok) {
-            throw new Error('Geocoding failed');
+    // Section Navigation
+    function showSection(section) {
+        document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+        // Note: Added null check for robustness
+        const menuItem = document.querySelector(`[onclick="showSection('${section}')"]`);
+        if (menuItem) {
+            menuItem.classList.add('active');
         }
+
+        document.querySelectorAll('.main-section').forEach(s => s.classList.add('hidden'));
+        document.getElementById(section + 'Section').classList.remove('hidden');
+
+        // Close mobile menu (if implemented)
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar && window.innerWidth <= 768) {
+                sidebar.classList.remove('active');
+        }
+    }
+
+    // --- LEAFLET MAP FUNCTIONS ---
+    /**
+     * Converts coordinates to a human-readable address using reverse geocoding
+     * and updates the UI (locationValue element) and the global savedLocationText.
+     */
+    async function reverseGeocodeAndUpdateUI(lat, lng) {
+        const locationValueElement = document.getElementById('locationValue');
         
-        const data = await response.json();
-        
-        let addressToDisplay = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`; // Fallback
-        
-        if (data && data.display_name) {
-            addressToDisplay = data.display_name;
+        // Set a temporary message while waiting for the API response
+        locationValueElement.textContent = '... Resolving Address ...';
+
+        try {
+            // Call Nominatim reverse geocoding API directly
+            const response = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
+            );
             
-            // Or create a shorter version from address components
-            if (data.address) {
-                const addr = data.address;
-                const parts = [
-                    addr.city || addr.town || addr.village,
-                    addr.state,
-                    addr.country
-                ].filter(Boolean);
+            if (!response.ok) {
+                throw new Error('Geocoding failed');
+            }
+            
+            const data = await response.json();
+            
+            let addressToDisplay = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`; // Fallback
+            
+            if (data && data.display_name) {
+                addressToDisplay = data.display_name;
                 
-                if (parts.length > 0) {
-                    addressToDisplay = parts.join(', ');
+                // Or create a shorter version from address components
+                if (data.address) {
+                    const addr = data.address;
+                    const parts = [
+                        addr.city || addr.town || addr.village,
+                        addr.state,
+                        addr.country
+                    ].filter(Boolean);
+                    
+                    if (parts.length > 0) {
+                        addressToDisplay = parts.join(', ');
+                    }
                 }
             }
+            
+            // Update the visible text in the main profile section immediately
+            locationValueElement.textContent = addressToDisplay;
+            
+            // Store the current address globally for when the SAVE button is clicked
+            savedLocationText = addressToDisplay;
+            
+            console.log('Address resolved:', addressToDisplay);
+            console.log('Full data:', data);
+            
+        } catch (error) {
+            console.error('Reverse geocoding error:', error);
+            const fallbackAddress = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
+            locationValueElement.textContent = fallbackAddress;
+            savedLocationText = fallbackAddress;
         }
-        
-        // Update the visible text in the main profile section immediately
-        locationValueElement.textContent = addressToDisplay;
-        
-        // Store the current address globally for when the SAVE button is clicked
-        savedLocationText = addressToDisplay;
-        
-        console.log('Address resolved:', addressToDisplay);
-        console.log('Full data:', data);
-        
-    } catch (error) {
-        console.error('Reverse geocoding error:', error);
-        const fallbackAddress = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
-        locationValueElement.textContent = fallbackAddress;
-        savedLocationText = fallbackAddress;
     }
-}
 
-// Function to update coordinates after drag or geocoding
-function onDragEnd() {
-    const latLng = marker.getLatLng();
-    currentCoords.lat = latLng.lat;
-    currentCoords.lng = latLng.lng;
-    
-    console.log(`Marker dragged. New coords: Lat ${currentCoords.lat}, Lng ${currentCoords.lng}`);
+    // Function to update coordinates after drag or geocoding
+    function onDragEnd() {
+        const latLng = marker.getLatLng();
+        currentCoords.lat = latLng.lat;
+        currentCoords.lng = latLng.lng;
+        
+        console.log(`Marker dragged. New coords: Lat ${currentCoords.lat}, Lng ${currentCoords.lng}`);
 
-    // Call the function to update the HTML field and savedLocationText
-    reverseGeocodeAndUpdateUI(currentCoords.lat, currentCoords.lng);
-    
-    map.panTo(latLng);
-}
-
-/**
- * Saves the globally stored address and coordinates, finalizing the change
- * in the profile display.
- */
-async function saveMapLocation() {
-    if (!savedLocationText || savedLocationText.includes('Resolving')) {
-        alert('Please wait for the location address to finish resolving before saving.');
-        return;
-    }
-    
-    // 1. Update the display in the profile section permanently
-    document.getElementById('locationValue').textContent = savedLocationText;
-    
-    // 2. Prepare data to send to server
-    const locationData = {
-        address: savedLocationText,
-        latitude: currentCoords.lat,
-        longitude: currentCoords.lng,
-        userId: 'miawalker@yahoo.com' // Replace with actual user ID from session/auth
-    };
-    
-    try {
-        // 3. Send AJAX request to server
-        const response = await fetch('https://joonh.sgedu.site/skillswap/backend/save-location.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(locationData)
-        });
-        
-        // Check if request was successful
-        if (!response.ok) {
-            throw new Error(`Server error: ${response.status}`);
-        }
-        
-        const result = await response.json();
-        
-        // 4. Handle server response
-        if (result.success) {
-            alert(`✅ Location successfully saved!\n${savedLocationText}\n(Lat: ${currentCoords.lat.toFixed(4)}, Lng: ${currentCoords.lng.toFixed(4)})`);
-            console.log('Location saved successfully:', result);
-        } else {
-            alert(`❌ Failed to save location: ${result.message || 'Unknown error'}`);
-            console.error('Save failed:', result);
-        }
-        
-    } catch (error) {
-        console.error('Error saving location:', error);
-        alert(`❌ Error saving location: ${error.message}\n\nLocation is saved locally but not synced to server.`);
-        
-        // Still save locally even if server fails
-        console.log('Location saved locally:', locationData);
-    }
-}
-
-// Add this version for local testing (no server needed)
-function saveMapLocation() {
-    if (!savedLocationText || savedLocationText.includes('Resolving')) {
-        alert('Please wait for the location address to finish resolving before saving.');
-        return;
-    }
-    
-    document.getElementById('locationValue').textContent = savedLocationText;
-    
-    // Save to localStorage for local testing
-    const locationData = {
-        address: savedLocationText,
-        latitude: currentCoords.lat,
-        longitude: currentCoords.lng,
-        timestamp: new Date().toISOString()
-    };
-    
-    localStorage.setItem('userLocation', JSON.stringify(locationData));
-    
-    alert(`✅ Location saved locally!\n${savedLocationText}\n(Lat: ${currentCoords.lat.toFixed(4)}, Lng: ${currentCoords.lng.toFixed(4)})`);
-    console.log('Saved location:', locationData);
-}
-// --- INITIALIZATION ---
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // Set initial location field text
-    document.getElementById('locationValue').textContent = savedLocationText;
-
-    // --- LEAFLET INITIALIZATION ---
-    map = L.map('profileMap').setView([currentCoords.lat, currentCoords.lng], 12);
-
-    // 1. Add Tile Layer (OpenStreetMap)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-
-    // 2. Add Draggable Marker
-    marker = L.marker([currentCoords.lat, currentCoords.lng], {
-        draggable: true
-    }).addTo(map);
-
-    marker.on('dragend', onDragEnd);
-
-    // 3. Add Geocoder (Search Box) - CORRECTED
-    const nominatimGeocoding = L.Control.Geocoder.nominatim();
-    geocoder = nominatimGeocoding; 
-    
-    const geocoderControl = L.Control.geocoder({
-        geocoder: nominatimGeocoding,
-        position: 'topleft', 
-        placeholder: 'Search for your city or address...',
-        defaultMarkGeocode: false  // Important: prevents default marker
-    }).addTo(map);
-    
-    geocoderControl.on('markgeocode', function(e) {
-        const center = e.geocode.center;
-        
-        // Update map view
-        map.setView(center, 14);
-        
-        // Move existing marker to new position
-        marker.setLatLng(center);
-        
-        // Update stored coordinates
-        currentCoords.lat = center.lat;
-        currentCoords.lng = center.lng;
-        
-        // Update the address display
+        // Call the function to update the HTML field and savedLocationText
         reverseGeocodeAndUpdateUI(currentCoords.lat, currentCoords.lng);
-    });
+        
+        map.panTo(latLng);
+    }
 
-    // Initial reverse geocode lookup to populate the field on load
-    reverseGeocodeAndUpdateUI(currentCoords.lat, currentCoords.lng); 
-});
+    /**
+     * Saves the globally stored address and coordinates, finalizing the change
+     * in the profile display.
+     */
+    async function saveMapLocation() {
+        if (!savedLocationText || savedLocationText.includes('Resolving')) {
+            alert('Please wait for the location address to finish resolving before saving.');
+            return;
+        }
+        
+        // 1. Update the display in the profile section permanently
+        document.getElementById('locationValue').textContent = savedLocationText;
+        
+        // 2. Prepare data to send to server
+        const locationData = {
+            address: savedLocationText,
+            latitude: currentCoords.lat,
+            longitude: currentCoords.lng,
+            userId: 'miawalker@yahoo.com' // Replace with actual user ID from session/auth
+        };
+        
+        try {
+            // 3. Send AJAX request to server
+            const response = await fetch('https://joonh.sgedu.site/skillswap/backend/save-location.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(locationData)
+            });
+            
+            // Check if request was successful
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status}`);
+            }
+            
+            const result = await response.json();
+            
+            // 4. Handle server response
+            if (result.success) {
+                alert(`✅ Location successfully saved!\n${savedLocationText}\n(Lat: ${currentCoords.lat.toFixed(4)}, Lng: ${currentCoords.lng.toFixed(4)})`);
+                console.log('Location saved successfully:', result);
+            } else {
+                alert(`❌ Failed to save location: ${result.message || 'Unknown error'}`);
+                console.error('Save failed:', result);
+            }
+            
+        } catch (error) {
+            console.error('Error saving location:', error);
+            alert(`❌ Error saving location: ${error.message}\n\nLocation is saved locally but not synced to server.`);
+            
+            // Still save locally even if server fails
+            console.log('Location saved locally:', locationData);
+        }
+    }
+
+    // Add this version for local testing (no server needed)
+    function saveMapLocation() {
+        if (!savedLocationText || savedLocationText.includes('Resolving')) {
+            alert('Please wait for the location address to finish resolving before saving.');
+            return;
+        }
+        
+        document.getElementById('locationValue').textContent = savedLocationText;
+        
+        // Save to localStorage for local testing
+        const locationData = {
+            address: savedLocationText,
+            latitude: currentCoords.lat,
+            longitude: currentCoords.lng,
+            timestamp: new Date().toISOString()
+        };
+        
+        localStorage.setItem('userLocation', JSON.stringify(locationData));
+        
+        alert(`✅ Location saved locally!\n${savedLocationText}\n(Lat: ${currentCoords.lat.toFixed(4)}, Lng: ${currentCoords.lng.toFixed(4)})`);
+        console.log('Saved location:', locationData);
+    }
+    // --- INITIALIZATION ---
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        // Set initial location field text
+        document.getElementById('locationValue').textContent = savedLocationText;
+
+        // --- LEAFLET INITIALIZATION ---
+        map = L.map('profileMap').setView([currentCoords.lat, currentCoords.lng], 12);
+
+        // 1. Add Tile Layer (OpenStreetMap)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // 2. Add Draggable Marker
+        marker = L.marker([currentCoords.lat, currentCoords.lng], {
+            draggable: true
+        }).addTo(map);
+
+        marker.on('dragend', onDragEnd);
+
+        // 3. Add Geocoder (Search Box) - CORRECTED
+        const nominatimGeocoding = L.Control.Geocoder.nominatim();
+        geocoder = nominatimGeocoding; 
+        
+        const geocoderControl = L.Control.geocoder({
+            geocoder: nominatimGeocoding,
+            position: 'topleft', 
+            placeholder: 'Search for your city or address...',
+            defaultMarkGeocode: false  // Important: prevents default marker
+        }).addTo(map);
+        
+        geocoderControl.on('markgeocode', function(e) {
+            const center = e.geocode.center;
+            
+            // Update map view
+            map.setView(center, 14);
+            
+            // Move existing marker to new position
+            marker.setLatLng(center);
+            
+            // Update stored coordinates
+            currentCoords.lat = center.lat;
+            currentCoords.lng = center.lng;
+            
+            // Update the address display
+            reverseGeocodeAndUpdateUI(currentCoords.lat, currentCoords.lng);
+        });
+
+        // Initial reverse geocode lookup to populate the field on load
+        reverseGeocodeAndUpdateUI(currentCoords.lat, currentCoords.lng); 
+    });
 
 
 

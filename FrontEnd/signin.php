@@ -1,29 +1,9 @@
-<style>
-    * {
-        margin: 0;
-        width: 100%;
-        text-align: center;
-        font-family: Helvetica, Arial, sans-serif;
-    }
-
-    body {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-
-    h1 {
-        color: #6b7280;
-        font-weight: 600;
-        font-size: 1.5rem;
-        margin-bottom: 20px;
-    }
-</style>
-
 <?php
-    echo "<body><h1>Authenticating...</h1><body>";
+    ini_set('session.cookie_domain', '.joonh.sgedu.site');
+    ini_set('session.cookie_secure', 1);
+    ini_set('session.cookie_httponly', 1);
+    session_start();
+
 
     $db_host = 'localhost';
     $db_user = 'utnq9qzvkroxc';
@@ -69,13 +49,17 @@
 
         $unameresult = mysqli_query($mysqli, "SELECT * FROM users WHERE user_id = '$user_id'");
         $emailresult = mysqli_query($mysqli, "SELECT * FROM users WHERE email = '$email'");
-        if ($unameresult && $emailresult) {
-            if (mysqli_num_rows($unameresult) == 1) { // check if username is in the db
+        if ($unameresult || $emailresult) {
+            if (mysqli_num_rows($unameresult) > 0) { // check if username is in the db
                 $datarow = $unameresult->fetch_array();
-                if ($password_hash == $datarow["password"]) $validcredentials = true;
-            } else if (mysqli_num_rows($emailresult) == 1) { // check if email is in the db
+                if (password_verify($password, $datarow["password"])) {
+                    $validcredentials = true;
+                }
+            } else if (mysqli_num_rows($emailresult) > 0) { // check if email is in the db
                 $datarow = $emailresult->fetch_array();
-                if ($password_hash == $datarow["password"]) $validcredentials = true;
+                if (password_verify($password, $datarow["password"])) {
+                    $validcredentials = true;
+                }
             }
         } else {
             throw new Exception("ERROR: database connection lost");
@@ -86,8 +70,6 @@
             echo "<p>Please try to <a href=\"signin.html\">sign in</a> again or <a href=\"signup.html\">sign up</a> to make an account.</p>";
             throw new Exception("<p>ERROR: incorrect credentials</p>");
         }
-
-
     } catch (Exception $e) {
         echo $e->getMessage();
         $error = TRUE;
@@ -95,9 +77,14 @@
 
     $mysqli->close();
     
+    session_start();
+
     if (!$error) {
+        // Store user info in server-side session
+        $_SESSION['user_id'] = $user_id;
+        $_SESSION['password'] = $password;
+
         header('Location: index.html');
-        // Fallback if headers were already sent
         echo '<script>window.location.href = "index.html";</script>';
     }
 

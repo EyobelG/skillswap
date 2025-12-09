@@ -1,29 +1,8 @@
-<style>
-    * {
-        margin: 0;
-        width: 100%;
-        text-align: center;
-        font-family: Helvetica, Arial, sans-serif;
-    }
-
-    body {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-
-    h1 {
-        color: #6b7280;
-        font-weight: 600;
-        font-size: 1.5rem;
-        margin-bottom: 20px;
-    }
-</style>
-
 <?php
-    echo "<body><h1>Authenticating...</h1><body>";
+    ini_set('session.cookie_domain', '.joonh.sgedu.site');
+    ini_set('session.cookie_secure', 1);
+    ini_set('session.cookie_httponly', 1);
+    session_start();
 
     $db_host = 'localhost';
     $db_user = 'utnq9qzvkroxc';
@@ -115,8 +94,11 @@
     $mysqli->close();
     
     if (!$error) {
+        // Store user info in server-side session
+        $_SESSION['user_id'] = $user_id;
+        $_SESSION['password'] = $password;
+
         header('Location: index.html');
-        // Fallback if headers were already sent
         echo '<script>window.location.href = "index.html";</script>';
     }
 
