@@ -252,25 +252,8 @@
             font-weight: 500;
         }
 
-        /* #footer-container {
-            margin-top: auto !important;
-            position: relative !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            text-align: center !important;
-            z-index: 1000 !important;
-            width: 100% !important;
-            background-color: #552583;
-            height: 100px;
-        } */
 
         /* Footer Styles */
-#footer-container {
-    margin-top: auto;
-    width: 100%;
-    background-color: var(--lakers-purple);
-    padding: 30px 0;
-}
 
 .site-footer {
     display: flex;
@@ -1239,18 +1222,6 @@
         // Run initialization function
         init();
         // Load footer dynamically
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('footer-container').innerHTML = `
-                <footer class="site-footer">
-                    <p>&copy; 2025 SkillSwap. All rights reserved.</p>
-                    <div>
-                        <a href="contact.html">Contact Us</a> | 
-                        <a href="#">Privacy Policy</a> | 
-                        <a href="#">Terms of Service</a>
-                    </div>
-                </footer>
-            `;
-        });
 
         // Scroll animation for testimonials - appears one by one as you scroll
         const testimonialObserverOptions = {
