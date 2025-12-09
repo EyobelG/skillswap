@@ -67,11 +67,17 @@ Your personality and speaking style should match your profession:
 Remember: You are chatting with a potential student who wants to learn from you, and potentially swap skills.";
 
 // Prepare API request
-$modelName = 'gemini-1.5-flash';
+$modelName = 'gemini-2.5-flash'; // Using the latest recommended model
 $apiUrl = "https://generativelanguage.googleapis.com/v1/models/{$modelName}:generateContent?key={$API_KEY}";
 
 $requestData = [
     'contents' => [
+        [
+            'role' => 'system',
+            'parts' => [
+                ['text' => $systemPrompt]
+            ]
+        ],
         [
             'role' => 'user',
             'parts' => [
@@ -79,8 +85,6 @@ $requestData = [
             ]
         ]
     ],
-    'systemInstruction' => $systemPrompt,
-    
     'generationConfig' => [
         'temperature' => 0.9,
         'topK' => 40,
