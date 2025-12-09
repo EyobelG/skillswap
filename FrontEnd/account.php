@@ -1063,7 +1063,6 @@
             const profileSection = document.getElementById('profileSection');
             const mapCard = document.getElementById('locationMapCard'); // Reference to the map container
 
-            // --- CRITICAL EDIT: Handle Location separately ---
             if (field === 'location') {
                 // 1. Hide the main profile section
                 profileSection.classList.add('hidden');
@@ -1075,13 +1074,13 @@
                 }
                 return; // Exit, as we don't open the standard modal
             }
-            // --- END CRITICAL EDIT ---
+
 
             const titles = {
                 name: 'Edit Full Name',
                 email: 'Edit Email',
                 phone: 'Edit Phone Number',
-                location: 'Edit Location', // Only used for the title object, not the action
+                location: 'Edit Location',
                 password: 'Change Password'
             };
 
@@ -1089,7 +1088,7 @@
                 name: document.getElementById('nameValue').textContent.trim(),
                 email: document.getElementById('emailValue').textContent.trim(),
                 phone: document.getElementById('phoneValue').textContent.trim(),
-                password: '' // Never pre-fill password
+                password: '' 
             };
 
             document.getElementById('modalTitle').textContent = titles[field];
@@ -1122,7 +1121,6 @@
             currentField = '';
         }
 
-        // You also need this function for the map card's cancel button
         function closeLocationEdit() {
             document.getElementById('locationMapCard').classList.add('hidden');
             document.getElementById('profileSection').classList.remove('hidden');
@@ -1153,7 +1151,6 @@
             closeEditModal();
         }
 
-        // Payment Modal Functions
         function openPaymentPopup() {
             document.getElementById('paymentModal').classList.remove('hidden');
         }
@@ -1411,65 +1408,62 @@
         }
     }
 
-    // --- LEAFLET MAP FUNCTIONS ---
-    /**
-     * Converts coordinates to a human-readable address using reverse geocoding
-     * and updates the UI (locationValue element) and the global savedLocationText.
-     */
-    async function reverseGeocodeAndUpdateUI(lat, lng) {
-        const locationValueElement = document.getElementById('locationValue');
-        
-        // Set a temporary message while waiting for the API response
-        locationValueElement.textContent = '... Resolving Address ...';
+// --- LEAFLET MAP FUNCTIONS ---
+/**
+ * Converts coordinates to a human-readable address using reverse geocoding
+ * and updates the UI (locationValue element) and the global savedLocationText.
+ */
+async function reverseGeocodeAndUpdateUI(lat, lng) {
+    const locationValueElement = document.getElementById('locationValue');
+    
+    locationValueElement.textContent = '... Resolving Address ...';
 
-        try {
-            // Call Nominatim reverse geocoding API directly
-            const response = await fetch(
-                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
-            );
+    try {
+        const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`
+        );
+        
+        if (!response.ok) {
+            throw new Error('Geocoding failed');
+        }
+        
+        const data = await response.json();
+        
+        let addressToDisplay = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`; 
+        
+        if (data && data.display_name) {
+            addressToDisplay = data.display_name;
             
-            if (!response.ok) {
-                throw new Error('Geocoding failed');
-            }
-            
-            const data = await response.json();
-            
-            let addressToDisplay = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`; // Fallback
-            
-            if (data && data.display_name) {
-                addressToDisplay = data.display_name;
+            if (data.address) {
+                const addr = data.address;
+                const parts = [
+                    addr.city || addr.town || addr.village,
+                    addr.state,
+                    addr.country
+                ].filter(Boolean);
                 
-                // Or create a shorter version from address components
-                if (data.address) {
-                    const addr = data.address;
-                    const parts = [
-                        addr.city || addr.town || addr.village,
-                        addr.state,
-                        addr.country
-                    ].filter(Boolean);
-                    
-                    if (parts.length > 0) {
-                        addressToDisplay = parts.join(', ');
-                    }
+                if (parts.length > 0) {
+                    addressToDisplay = parts.join(', ');
                 }
             }
-            
-            // Update the visible text in the main profile section immediately
-            locationValueElement.textContent = addressToDisplay;
-            
-            // Store the current address globally for when the SAVE button is clicked
-            savedLocationText = addressToDisplay;
-            
-            console.log('Address resolved:', addressToDisplay);
-            console.log('Full data:', data);
-            
-        } catch (error) {
-            console.error('Reverse geocoding error:', error);
-            const fallbackAddress = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
-            locationValueElement.textContent = fallbackAddress;
-            savedLocationText = fallbackAddress;
         }
+        
+        // Update the visible text in the main profile section immediately
+        locationValueElement.textContent = addressToDisplay;
+        
+        // Store the current address globally for when the SAVE button is clicked
+        savedLocationText = addressToDisplay;
+        
+        console.log('Address resolved:', addressToDisplay);
+        console.log('Full data:', data);
+        
+    } catch (error) {
+        console.error('Reverse geocoding error:', error);
+        const fallbackAddress = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
+        locationValueElement.textContent = fallbackAddress;
+        savedLocationText = fallbackAddress;
     }
+}
 
     // Function to update coordinates after drag or geocoding
     function onDragEnd() {
@@ -1479,11 +1473,10 @@
         
         console.log(`Marker dragged. New coords: Lat ${currentCoords.lat}, Lng ${currentCoords.lng}`);
 
-        // Call the function to update the HTML field and savedLocationText
-        reverseGeocodeAndUpdateUI(currentCoords.lat, currentCoords.lng);
-        
-        map.panTo(latLng);
-    }
+    reverseGeocodeAndUpdateUI(currentCoords.lat, currentCoords.lng);
+    
+    map.panTo(latLng);
+}
 
     /**
      * Saves the globally stored address and coordinates, finalizing the change
@@ -1616,9 +1609,6 @@
         reverseGeocodeAndUpdateUI(currentCoords.lat, currentCoords.lng); 
     });
 
-
-
-    // Hamburger menu toggle function
     function toggleMenu() {
         var nav = document.getElementById("myTopnav");
         nav.classList.toggle("responsive");
