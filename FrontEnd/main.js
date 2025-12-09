@@ -2,11 +2,23 @@
 let allMembers = [];
 
 document.addEventListener("DOMContentLoaded", () => {
-    fetch("../backend/database.php")
-        .then(response => response.json())
-        .then(members => {
-            const container = document.getElementById("members-container");
+    // Check if we're on a page that has the members container
+    const container = document.getElementById("members-container");
+    
+    // If not on members page, skip this code
+    if (!container) {
+        console.log("Not on members page, skipping member loading");
+        return;
+    }
 
+    fetch("../backend/database.php")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(members => {
             if (!Array.isArray(members) || members.length === 0) {
                 container.innerHTML = "<p>No members found.</p>";
                 return;
@@ -17,42 +29,54 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const teachInput = document.getElementById("teach-filter");
             const learnInput = document.getElementById("learn-filter");
-
-            function applyFilters() {
-                console.log("hello");
-                const teachQuery = teachInput.value.toLowerCase();
-                const learnQuery = learnInput.value.toLowerCase();
-
-                const filtered = allMembers.filter(member => {
-                    const categories = (member.categories || []).map(c => c.toLowerCase());
-                    const wants = (member.wantsToLearn || []).map(w => w.toLowerCase());
-
-                    const matchesTeach =
-                        !teachQuery ||
-                        categories.some(cat => cat.includes(teachQuery));
-
-                    const matchesLearn =
-                        !learnQuery ||
-                        wants.some(w => w.includes(learnQuery));
-
-                    return matchesTeach && matchesLearn;
-                });
-
-                renderMembers(filtered);
-            }
-
             const searchBtn = document.getElementById("search-btn");
-            searchBtn.addEventListener("click", applyFilters);
+
+            // Only add listeners if elements exist
+            if (teachInput && learnInput && searchBtn) {
+                function applyFilters() {
+                    console.log("Applying filters");
+                    const teachQuery = teachInput.value.toLowerCase();
+                    const learnQuery = learnInput.value.toLowerCase();
+
+                    const filtered = allMembers.filter(member => {
+                        const categories = (member.categories || []).map(c => c.toLowerCase());
+                        const wants = (member.wantsToLearn || []).map(w => w.toLowerCase());
+
+                        const matchesTeach =
+                            !teachQuery ||
+                            categories.some(cat => cat.includes(teachQuery));
+
+                        const matchesLearn =
+                            !learnQuery ||
+                            wants.some(w => w.includes(learnQuery));
+
+                        return matchesTeach && matchesLearn;
+                    });
+
+                    renderMembers(filtered);
+                }
+
+                searchBtn.addEventListener("click", applyFilters);
+            }
         })
         .catch(error => {
             console.error("Error fetching members:", error);
-            document.getElementById("members-container").innerHTML =
-                "<p>Error loading members.</p>";
+            // Only update container if it exists
+            if (container) {
+                container.innerHTML = "<p>Error loading members. Please try again later.</p>";
+            }
         });
 });
 
 function renderMembers(members) {
     const container = document.getElementById("members-container");
+    
+    // Safety check
+    if (!container) {
+        console.error("members-container element not found");
+        return;
+    }
+    
     container.innerHTML = "";
 
     if (members.length === 0) {
@@ -93,27 +117,30 @@ function renderMembers(members) {
         container.appendChild(card);
     });
 }
-//CODE TO LOAD MEMBERS FROM DATABASE
+
 //RESPONSIVE NAVBAR CODE
 function toggleMenu() {
-    document.getElementById("myTopnav").classList.toggle("responsive");
+    const nav = document.getElementById("myTopnav");
+    if (nav) {
+        nav.classList.toggle("responsive");
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
     const submitBtn = document.getElementById('submitBtn');
 
     if (submitBtn) {
-        // 2. Add a click event listener
         submitBtn.addEventListener('click', function(event) {
             window.location.href = 'success.html';
         });
     }
 });
+
 // Intersection Observer for scroll animations
 // Each image appears ONLY when you scroll to it
 const observerOptions = {
-    threshold: 0.3, // Trigger when 30% of element is visible
-    rootMargin: '0px 0px -100px 0px' // Need to scroll more before triggering
+    threshold: 0.3, 
+    rootMargin: '0px 0px -100px 0px' 
 };
 
 const observer = new IntersectionObserver((entries) => {
@@ -122,13 +149,17 @@ const observer = new IntersectionObserver((entries) => {
         if (entry.isIntersecting && !entry.target.classList.contains('visible')) {
             entry.target.classList.add('visible');
             
-            // Stop observing this element (one-time animation)
             observer.unobserve(entry.target);
         }
     });
 }, observerOptions);
 
-// Observe all testimonial items
-document.querySelectorAll('.testimonial-item').forEach(item => {
-    observer.observe(item);
+// Only observe testimonials if they exist on the page
+document.addEventListener('DOMContentLoaded', function() {
+    const testimonials = document.querySelectorAll('.testimonial-item');
+    if (testimonials.length > 0) {
+        testimonials.forEach(item => {
+            observer.observe(item);
+        });
+    }
 });
