@@ -22,9 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit(0);
 }
 
-// Get POST data (UPDATED TO EXPECT 'history')
+// Get POST data
 $input = json_decode(file_get_contents('php://input'), true);
-$history = $input['history'] ?? []; // <-- GET HISTORY
+$history = $input['history'] ?? []; 
 $memberName = $input['memberName'] ?? 'Instructor';
 $memberAge = $input['memberAge'] ?? '40';
 $memberCategories = $input['memberCategories'] ?? 'programming';
@@ -50,22 +50,25 @@ Remember: You are chatting with a potential student who wants to learn from you,
 and potentially swap skills.";
 
 // Define the model
-$modelName = 'gemini-2.5-flash';
+$modelName = 'gemini-2.0-flash-exp';
 
 // Prepare API request to Gemini
 $apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/{$modelName}:generateContent?key={$API_KEY}";
 
+// FIX: Correct structure for Gemini API
 $requestData = [
-    // Using systemInstruction for character/persona guidance
-    'config' => [
-        'systemInstruction' => $systemPrompt,
-        'temperature' => 0.9,
-        'topK' => 1,
-        'topP' => 1,
-        'maxOutputTokens' => 500
+    'system_instruction' => [
+        'parts' => [
+            ['text' => $systemPrompt]
+        ]
     ],
-    // Pass the entire conversation history for context
-    'contents' => $history // <-- USE HISTORY ARRAY HERE
+    'contents' => $history,
+    'generationConfig' => [
+        'temperature' => 0.9,
+        'topK' => 40,
+        'topP' => 0.95,
+        'maxOutputTokens' => 500
+    ]
 ];
 
 // Make the API call using cURL
@@ -90,7 +93,6 @@ if ($curlError) {
 }
 
 if ($httpCode !== 200) {
-    // Attempt to decode the response for better debugging
     $errorDetails = json_decode($response, true) ?? ['raw_response' => $response];
     http_response_code(500);
     echo json_encode(['error' => 'API request failed', 'httpCode' => $httpCode, 'details' => $errorDetails]);
