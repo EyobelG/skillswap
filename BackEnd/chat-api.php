@@ -49,20 +49,20 @@ Your personality and speaking style should match your profession:
 Remember: You are chatting with a potential student who wants to learn from you, 
 and potentially swap skills.";
 
-// Define the model
-$modelName = 'gemini-2.0-flash-exp';
+// Define the model - use stable version
+$modelName = 'gemini-1.5-flash';
 
 // Prepare API request to Gemini
-$apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/{$modelName}:generateContent?key={$API_KEY}";
+$apiUrl = "https://generativelanguage.googleapis.com/v1/models/{$modelName}:generateContent?key={$API_KEY}";
 
-// FIX: Correct structure for Gemini API
+// Correct structure for Gemini API
 $requestData = [
-    'system_instruction' => [
+    'contents' => $history,
+    'systemInstruction' => [
         'parts' => [
             ['text' => $systemPrompt]
         ]
     ],
-    'contents' => $history,
     'generationConfig' => [
         'temperature' => 0.9,
         'topK' => 40,
